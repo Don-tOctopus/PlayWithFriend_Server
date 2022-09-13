@@ -29,9 +29,13 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     //assertJ
-//    testImplementation "org.assertj:assertj-core:3.20.2"
+    //testImplementation "org.assertj:assertj-core:3.20.2"
     //swagger
     implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+
+    //mariaDB
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.5'
 }
 
 tasks.named('test') {
