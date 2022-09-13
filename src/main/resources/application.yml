@@ -1,13 +1,13 @@
-#spring:
-#  datasource:
-#    url:
-#    username:
-#    password:
-#    driver-class-name: org.mariadb.jdbc.Driver
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#    generate-ddl: true
-#  mvc:
-#    pathmatch:
-#      matching-strategy: ant_path_matcher
+spring:
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
