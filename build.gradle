@@ -43,6 +43,9 @@ dependencies {
     //websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+    // JSON
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     //embedded-redis
