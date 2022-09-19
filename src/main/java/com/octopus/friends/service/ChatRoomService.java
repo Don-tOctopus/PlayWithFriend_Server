@@ -20,12 +20,10 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 패키지명 com.octopus.friends.service
@@ -58,6 +56,12 @@ public class ChatRoomService {
     // 채팅방의 대화 메시지를 발행하기 위한 redis topic 정보. 서버별로 채팅방에 매치되는 topic정보를 Map에 넣어 roomId로 찾을수 있도록 한다.
     private Map<String, ChannelTopic> topics;
 
+    @PostConstruct
+    private void init() {
+        opsHashChatRoom = redisTemplate.opsForHash();
+        topics = new HashMap<>();
+    }
+
     /**
      * 생성한 채팅방을 DB에 저장
      * @param userId 로그인한 유저의 id
@@ -82,7 +86,7 @@ public class ChatRoomService {
                     .user(user.get())
                     .build();
 
-            chatRoomRelationRepository.save(chatRoomRelation);
+            ChatRoomRelation re = chatRoomRelationRepository.save(chatRoomRelation);
         }
 
         ChatRoomRelation hostRoom = chatRoomRelationRepository.findByUserAndChatRoom(host, chatRoom);
@@ -125,7 +129,7 @@ public class ChatRoomService {
     }
 
     /**
-     *
+     * 로그인한 유저가 속한 모든 채팅방 조회
      * @param userId
      * @return
      */
@@ -142,6 +146,33 @@ public class ChatRoomService {
     }
 
     /**
+     * 참여하고 있던 채팅방 나가기
+     * @param userId 로그인한 유저
+     * @param roomIdx 나가고 싶은 채팅방의 idx
+     * @return ChatRoomRelationResponseDto
+     */
+    @Transactional
+    public ChatRoomRelationResponseDto leaveChatRoom(final String userId, final Long roomIdx){
+        ChatRoom chatRoom = chatRoomRepository.findById(roomIdx)
+                .orElseThrow(()-> new EntityNotFoundException("찾을 수 없는 채팅방"));
+        User user = userRepository.findByUserIdEquals(userId)
+                .orElseThrow(() -> new EntityNotFoundException("찾을 수 없는 사용자"));
+
+        ChatRoomRelation chatRoomRelation = chatRoomRelationRepository.findByUserAndChatRoom(user, chatRoom);
+
+        chatRoomRelation.setStatus(false);
+        chatRoom.leave();
+
+        //채팅방의 인원이 모두 나간경우 redis에서 삭제
+        if(chatRoom.getUCnt()<1){
+            opsHashChatRoom.delete(CHAT_ROOMS, chatRoom.getChatRoomIdx().toString());
+        }
+
+        ChatRoomRelationResponseDto response = ChatRoomRelationResponseDto.of(chatRoomRelation);
+        return response;
+    }
+
+    /**
      * 전체 채팅방 조회
      * @return
      */
@@ -152,6 +183,15 @@ public class ChatRoomService {
             responses.add(ChatRoomResponseDto.of(chatRoom));
         }
         return responses;
+    }
+
+    public void enterChatRoom(String roomId) {
+        ChannelTopic topic = topics.get(roomId);
+        if (topic == null) {
+            topic = new ChannelTopic(roomId);
+            redisMessageListener.addMessageListener(redisSubscriber, topic);
+            topics.put(roomId, topic);
+        }
     }
 
     public ChannelTopic getTopic(String roomId) {

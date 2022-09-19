@@ -29,14 +29,13 @@ import java.util.List;
  * [2022-09-17] 내용 추가 - 원지윤
  */
 
-@Schema(description = "사용자")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 public class User{
-    @Id
     @Schema(description = "사용자의 이메일")
+    @Id
     @Column(nullable = false,columnDefinition = "varchar(30)")
     private String email;
 

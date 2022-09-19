@@ -1,5 +1,6 @@
 package com.octopus.friends.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
  * @version 1.0
  * [수정내용] 
  * 예시) [2022-09-17] 주석추가 - 원지윤
+ * [2022-09-19] 스웨거 어노테이션 추가 - 원지윤
  */
 @Entity
 @Getter
@@ -36,25 +38,32 @@ public class ChatRoom implements Serializable {
         VEDIO
     }
 
+    @Schema(description = "채팅방 인덱스")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatRoomIdx;
 
+    @Schema(description = "채팅방 생성 유저의 아이디")
     @Column(nullable = false, columnDefinition = "varchar(30)")
     private String hostId;
 
+    @Schema(description = "채팅방안의 유저수")
     @Column(nullable = false, columnDefinition = "int")
     private int uCnt;
 
+    @Schema(description = "채팅방이 만들어진 시간")
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @Schema(description = "채팅방이 마지막으로 수정된 시간")
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @Schema(description = "채팅방의 타입", example = "TEXT", allowableValues = {"TEXT", "VEDIO"})
     @Column(nullable = false, columnDefinition = "varchar(5)")
     private ChatRoomType chatRoomType;
 
+    @Schema(description = "채팅방에 속한 유저의 채팅방릴레이션 엔티티")
     @OneToMany(mappedBy = "chatRoom")
     private List<ChatRoomRelation> chatRoomRelationList = new ArrayList<>();
 
@@ -68,13 +77,21 @@ public class ChatRoom implements Serializable {
     public ChatRoom(String hostId,ChatRoomType chatRoomType, int uCnt){
         this.hostId = hostId;
         this.chatRoomType = chatRoomType;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
         this.uCnt = uCnt;
     }
 
+    /**
+     * 채팅방에서 유저가 나갈 때 채팅방의 유저수 감소
+     */
     public void leave(){
         this.uCnt--;
     }
 
+    /**
+     * 채팅방에 유저가 들어올 때 채팅방의 유저수 증가
+     */
     public void join(){
         this.uCnt++;
     }

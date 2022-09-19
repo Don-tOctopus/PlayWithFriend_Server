@@ -3,6 +3,7 @@ package com.octopus.friends.controller;
 import com.octopus.friends.common.domain.SingleResponse;
 import com.octopus.friends.common.domain.enums.Status;
 import com.octopus.friends.common.service.ResponseService;
+import com.octopus.friends.domain.ChatRoomRelation;
 import com.octopus.friends.dto.request.CreateChatRoomRequestDto;
 import com.octopus.friends.dto.request.JoinChatRoomRequestDto;
 import com.octopus.friends.dto.response.ChatRoomRelationResponseDto;
@@ -65,16 +66,29 @@ public class ChatRoomController {
     }
 
     /**
+     * user가 참여하고 있던 채팅방에서 나가기
+     * @param userId 로그인한 유저의 id
+     * @param roomIdx 나가기를 요청한 채팅방의 idx
+     * @return 요청에 대한 응답
+     */
+    @PostMapping("/leave/{roomIdx}")
+    public ResponseEntity<SingleResponse<ChatRoomRelationResponseDto>> leaveChatRoom(@RequestHeader("USER-ID") String userId, @PathVariable Long roomIdx){
+        ChatRoomRelationResponseDto chatRoomRelation = chatRoomService.leaveChatRoom(userId, roomIdx);
+        SingleResponse<ChatRoomRelationResponseDto> response = responseService.getSingleResponse(chatRoomRelation, Status.SUCCESS_DELETED_CHATROOM);
+        return  ResponseEntity.ok().body(response);
+    }
+
+    /**
      * 로그인한 유저가 참여중인 모든 채팅방 조회
      * @param userId
      * @return
      */
-//    @GetMapping
-//    public ResponseEntity<SingleResponse<List<ChatRoomRelationResponseDto>>> findAllByUserId(@RequestHeader("USER-ID")String userId){
-//        List<ChatRoomRelationResponseDto> responses = chatRoomService.findAllByUserId(userId);
-//        SingleResponse<List<ChatRoomRelationResponseDto>> response = responseService.getSingleResponse(responses,Status.SUCCESS_SEARCHED_CHATROOM);
-//        return ResponseEntity.ok().body(response);
-//    }
+    @GetMapping
+    public ResponseEntity<SingleResponse<List<ChatRoomRelationResponseDto>>> findAllByUserId(@RequestHeader("USER-ID")String userId){
+        List<ChatRoomRelationResponseDto> responses = chatRoomService.findAllByUserId(userId);
+        SingleResponse<List<ChatRoomRelationResponseDto>> response = responseService.getSingleResponse(responses,Status.SUCCESS_SEARCHED_CHATROOM);
+        return ResponseEntity.ok().body(response);
+    }
 
     /**
      * 모든 채팅방 조회
@@ -87,9 +101,5 @@ public class ChatRoomController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping
-    public String rooms(Model model) {
-        return "/chat/room";
-    }
 
 }

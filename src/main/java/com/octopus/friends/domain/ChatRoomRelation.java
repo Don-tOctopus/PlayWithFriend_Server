@@ -1,5 +1,6 @@
 package com.octopus.friends.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,18 +24,22 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 public class ChatRoomRelation {
+    @Schema(description = "채팅방 관계 idx")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomRelationIdx;
 
+    @Schema(description = "채팅방 idx")
     @ManyToOne
     @JoinColumn(name = "chatroom_idx")
     private ChatRoom chatRoom;
 
+    @Schema(description = "채팅방에 속한 user의 id")
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Schema(description = "채팅방 참여 상태", defaultValue = "true", allowableValues = {"true","false"})
     @Column(nullable = false, columnDefinition = "bool default 'true'")
     private boolean status;
 
