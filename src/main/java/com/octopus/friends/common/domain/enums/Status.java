@@ -22,6 +22,7 @@ public enum Status {
     FAIL(-999,"실패"),
     SUCCESS_JOINED_CHATROOM(200, "채팅방 입장 성공"),
     SUCCESS_SEARCHED_CHATROOM(200,"채팅방 전체 조회 성공"),
+    SUCCESS_DELETED_CHATROOM(200,"채팅방 삭제 성공"),
     SUCCESS_CREATED_CHATROOM(201, "채팅방 생성 성공");
 
     private final int code;
