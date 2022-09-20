@@ -7,16 +7,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.JSONParser;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -110,5 +109,70 @@ public class VideoRoomController {
         data.put("to", ob.get("to"));
 
         return data;
+    }
+
+//    /**
+//     *
+//     * @param map
+//     * @return
+//     * @throws ParseException
+//     */
+//    @MessageMapping("/video/audio-sentiment")
+//    @SendTo("/sub/video/audio-sentiment")
+//    public Map<String, Object> getAudioSentiment(@RequestBody Map<String, String> map) throws ParseException {
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        RestTemplate restTemplate = new RestTemplate();
+//        String resultMessage = restTemplate.postForObject(Constants.ML_API_URL + "/audio-sentiment", new HttpEntity<>(map, headers), String.class);
+//
+//        JSONParser parser = new JSONParser();
+//        Object obj = parser.parse(resultMessage);
+//        JSONObject jsonObj = (JSONObject) obj;
+//
+//        // {from : senderId, }
+//        Map<String, Object> returnData = new HashMap<>();
+//        returnData.put("from", map.get("from"));
+//        returnData.put("resultOfAudioSentiment", jsonObj);
+//        return returnData;
+//    }
+//
+//    /**
+//     *
+//     * @param map
+//     * @return
+//     * @throws ParseException
+//     */
+//    @MessageMapping("/video/chat")
+//    @SendTo("/sub/video/chat")
+//    public Map<String, String> listenAndSendChat(@RequestBody Map<String, String> map) throws ParseException {
+//
+//        return map;
+//    }
+
+    @EventListener
+    private void handleSessionConnected(SessionConnectEvent event) {
+
+    }
+
+    /**
+     * close된 세션 id 전달
+     * @param event close된 세션 id
+     */
+    @EventListener
+    private void handleSessionDisconnect(SessionDisconnectEvent event) {
+
+        String removedID = "";
+
+        // close된 세션의 id 저장
+        for (JoinChatRoomRequestDto session : chatRoomIdxList) {
+            if (session.getSessionId().equals(event.getSessionId())) {
+                removedID = session.getUserId();
+                chatRoomIdxList.remove(session);
+                break;
+            }
+        }
+
+        // 종료 세션 id 전달
+        template.convertAndSend("/sub/video/close-session", removedID);
     }
 }
