@@ -75,8 +75,8 @@ public class VideoRoomController {
 
     /**
      * caller들의 정보를 다른 callee에게 전송
-     * @param ob caller, callee의 정보
-     * @return caller, callee의 정보
+     * @param ob callerId, calleeId, streamData
+     * @return caller의 정보
      */
     @MessageMapping("/video/caller-info")
     @SendTo("/sub/video/caller-info")
@@ -84,7 +84,6 @@ public class VideoRoomController {
 
         log.info(ob.toJSONString());
 
-        // caller의 정보를 소켓으로 전송
         Map<String, Object> data = new HashMap<>();
         data.put("toCall", ob.get("toCall"));
         data.put("from", ob.get("from"));
@@ -93,5 +92,23 @@ public class VideoRoomController {
         return data;
     }
 
+    /**
+     * caller에게 온 signalling Data 확인 후 caller에게 signaling answer
+     * (caller와 callee의 signaling을 위해 callee 정보 전송)
+     * @param ob callee의 정보
+     * @return accepter의 정보
+     */
+    @MessageMapping("/video/callee-info")
+    @SendTo("/sub/video/callee-info")
+    private Map<String, Object> answerCall(JSONObject ob) {
 
+        log.info(ob.toJSONString());
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("signal", ob.get("signal"));
+        data.put("from", ob.get("from"));
+        data.put("to", ob.get("to"));
+
+        return data;
+    }
 }
