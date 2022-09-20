@@ -1,5 +1,7 @@
 package com.octopus.friends.service;
 
+import com.octopus.friends.common.domain.enums.Status;
+import com.octopus.friends.common.exception.CustomerNotFoundException;
 import com.octopus.friends.domain.ChatRoom;
 import com.octopus.friends.domain.ChatRoomRelation;
 import com.octopus.friends.domain.User;
@@ -108,7 +110,7 @@ public class ChatRoomService {
             throw new RuntimeException("옳지 않은 접근입니다");
         }
         return userRepository.findByUserIdEquals(userId)
-                .orElseThrow(() -> new EntityNotFoundException("찾을 수 없는 사용자"));
+                .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_USER));
     }
 
     /**
