@@ -5,7 +5,7 @@ import com.octopus.friends.utils.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.json.JSONParser;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.context.event.EventListener;
@@ -111,43 +111,43 @@ public class VideoRoomController {
         return data;
     }
 
-//    /**
-//     *
-//     * @param map
-//     * @return
-//     * @throws ParseException
-//     */
-//    @MessageMapping("/video/audio-sentiment")
-//    @SendTo("/sub/video/audio-sentiment")
-//    public Map<String, Object> getAudioSentiment(@RequestBody Map<String, String> map) throws ParseException {
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        RestTemplate restTemplate = new RestTemplate();
-//        String resultMessage = restTemplate.postForObject(Constants.ML_API_URL + "/audio-sentiment", new HttpEntity<>(map, headers), String.class);
-//
-//        JSONParser parser = new JSONParser();
-//        Object obj = parser.parse(resultMessage);
-//        JSONObject jsonObj = (JSONObject) obj;
-//
-//        // {from : senderId, }
-//        Map<String, Object> returnData = new HashMap<>();
-//        returnData.put("from", map.get("from"));
-//        returnData.put("resultOfAudioSentiment", jsonObj);
-//        return returnData;
-//    }
-//
-//    /**
-//     *
-//     * @param map
-//     * @return
-//     * @throws ParseException
-//     */
-//    @MessageMapping("/video/chat")
-//    @SendTo("/sub/video/chat")
-//    public Map<String, String> listenAndSendChat(@RequestBody Map<String, String> map) throws ParseException {
-//
-//        return map;
-//    }
+    /**
+     * ////////////////////////////////////////////////////////////////////
+     * @param map
+     * @return
+     * @throws ParseException
+     */
+    @MessageMapping("/video/audio-sentiment")
+    @SendTo("/sub/video/audio-sentiment")
+    public Map<String, Object> getAudioSentiment(@RequestBody Map<String, String> map) throws ParseException {
+
+        HttpHeaders headers = new HttpHeaders();
+        RestTemplate restTemplate = new RestTemplate();
+        String resultMessage = restTemplate.postForObject(Constants.ML_API_URL + "/audio-sentiment", new HttpEntity<>(map, headers), String.class);
+
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(resultMessage);
+        JSONObject jsonObj = (JSONObject) obj;
+
+        // {from : senderId, }
+        Map<String, Object> returnData = new HashMap<>();
+        returnData.put("from", map.get("from"));
+        returnData.put("resultOfAudioSentiment", jsonObj);
+        return returnData;
+    }
+
+    /**
+     *
+     * @param map
+     * @return /////////////////////////////////////////////////////////////
+     * @throws ParseException
+     */
+    @MessageMapping("/video/chat")
+    @SendTo("/sub/video/chat")
+    public Map<String, String> listenAndSendChat(@RequestBody Map<String, String> map) throws ParseException {
+
+        return map;
+    }
 
     @EventListener
     private void handleSessionConnected(SessionConnectEvent event) {
