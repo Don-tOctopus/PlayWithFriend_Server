@@ -14,11 +14,10 @@ import lombok.Setter;
  * 클래스설명
  * 작성일 2022-09-18
  *
- * @author 원지윤
+ * @author 원지윤, 남유정
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
- * [2022-09-19] sessionId 추가 - 남유정
  */
 @Getter
 @Setter
