@@ -57,7 +57,7 @@ public class User{
     private String birth;
 
     @Schema(description = "사용자의 현재 상태(가입 true,탈퇴 false)")
-    @Column(nullable = false, columnDefinition = "boolean default 'true'")
+    @Column(nullable = false, columnDefinition = "boolean")
     private boolean status;
 
     @Schema(description = "사용자의 웹 버전")

@@ -2,6 +2,7 @@ package com.octopus.friends.controller;
 
 import com.octopus.friends.dto.request.JoinChatRoomRequestDto;
 import com.octopus.friends.utils.Constants;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.JSONParser;
@@ -38,13 +39,12 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@Tag(name = "chatRoom", description = "채팅방 관리 관련 API")
 @RequiredArgsConstructor
 @CrossOrigin(origins = {Constants.API_URL, Constants.API_URL_DEV}, allowCredentials = "true")
 public class VideoRoomController {
 
-    /**
-     * 세션 리스트
-     */
+    // 세션 리스트
     private final ArrayList<JoinChatRoomRequestDto> chatRoomIdxList;
     private final SimpMessagingTemplate template;
 
@@ -63,6 +63,34 @@ public class VideoRoomController {
         chatRoomIdxList.add(new JoinChatRoomRequestDto(chatRoomIdx,(String) ob.get("from"), sessionId));
 
         return chatRoomIdxList;
+    }
+
+    @ResponseBody
+    @GetMapping("/test")
+    public String test(){
+
+        log.info("qweqwe");
+        return "qwe";
+    }
+
+    /**
+     * caller들의 정보를 다른 callee에게 전송
+     * @param ob caller, callee의 정보
+     * @return caller, callee의 정보
+     */
+    @MessageMapping("/video/caller-info")
+    @SendTo("/sub/video/caller-info")
+    private Map<String, Object> caller(JSONObject ob) {
+
+        log.info(ob.toJSONString());
+
+        // caller의 정보를 소켓으로 전송
+        Map<String, Object> data = new HashMap<>();
+        data.put("toCall", ob.get("toCall"));
+        data.put("from", ob.get("from"));
+        data.put("signal", ob.get("signal"));
+
+        return data;
     }
 
 

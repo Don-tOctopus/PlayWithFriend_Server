@@ -40,7 +40,7 @@ public class ChatRoomRelation {
     private User user;
 
     @Schema(description = "채팅방 참여 상태", defaultValue = "true", allowableValues = {"true","false"})
-    @Column(nullable = false, columnDefinition = "bool default 'true'")
+    @Column(nullable = false, columnDefinition = "boolean")
     private boolean status;
 
     /**

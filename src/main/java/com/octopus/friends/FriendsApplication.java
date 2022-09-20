@@ -15,26 +15,6 @@ public class FriendsApplication {
         SpringApplication.run(FriendsApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner runner(UserRepository userRepository) throws Exception{
-        return (args) -> {
-            User user = userRepository.save(User.builder()
-                    .userName("test")
-                    .userId("test")
-                    .birth("2022.09.17")
-                    .email("test@test.com")
-                    .password("test")
-                    .build());
 
-            User user1 = userRepository.save(User.builder()
-                    .userName("test1")
-                    .userId("test1")
-                    .birth("2022.09.17")
-                    .email("test1@test.com")
-                    .password("test1")
-                    .build());
-        };
-
-    }
 
 }
