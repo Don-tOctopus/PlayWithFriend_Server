@@ -22,12 +22,14 @@ import lombok.NoArgsConstructor;
 public class ChatRoomResponseDto {
     private Long chatRoomIdx;
     private int uCnt;
+    private String roomName;
     private String hostId;
 
     public static ChatRoomResponseDto of(ChatRoom chatRoom){
         return new ChatRoomResponseDto(
                 chatRoom.getChatRoomIdx(),
                 chatRoom.getUCnt(),
+                chatRoom.getRoomName(),
                 chatRoom.getHostId()
         );
     }

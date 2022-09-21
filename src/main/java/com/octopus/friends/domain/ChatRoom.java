@@ -47,6 +47,9 @@ public class ChatRoom implements Serializable {
     @Column(nullable = false, columnDefinition = "varchar(30)")
     private String hostId;
 
+    @Column(nullable = false, columnDefinition = "varchar(30)")
+    private String roomName;
+
     @Schema(description = "채팅방안의 유저수")
     @Column(nullable = false, columnDefinition = "int")
     private int uCnt;
@@ -61,6 +64,7 @@ public class ChatRoom implements Serializable {
 
     @Schema(description = "채팅방의 타입", example = "TEXT", allowableValues = {"TEXT", "VEDIO"})
     @Column(nullable = false, columnDefinition = "varchar(5)")
+    @Enumerated(EnumType.STRING)
     private ChatRoomType chatRoomType;
 
     @Schema(description = "채팅방에 속한 유저의 채팅방릴레이션 엔티티")
@@ -74,8 +78,9 @@ public class ChatRoom implements Serializable {
      * @param uCnt 채팅방 생성 초기의 채팅방에 있는 유저의 숫자
      */
     @Builder
-    public ChatRoom(String hostId,ChatRoomType chatRoomType, int uCnt){
+    public ChatRoom(String hostId,String roomName, ChatRoomType chatRoomType, int uCnt){
         this.hostId = hostId;
+        this.roomName = roomName;
         this.chatRoomType = chatRoomType;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

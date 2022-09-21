@@ -6,6 +6,7 @@ import com.octopus.friends.service.ChatRoomService;
 import com.octopus.friends.service.RedisPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
@@ -37,12 +38,11 @@ public class ChatController {
         if(ChatRequestDto.ChatType.ENTER.equals(request.getChatType()))
             request.setContent(request.getSenderId()+"님이 입장하셨습니다.");
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
-
         Chat chat = Chat.builder()
                 .roomIdx(request.getRoomIdx())
                 .senderId(request.getSenderId())
                 .content(request.getContent())
-                .type(request.getRoomIdx())
+                .type(request.getChatType().toString())
                 .build();
 
         redisPublisher.publish(chatRoomService.getTopic(request.getRoomIdx()), chat);

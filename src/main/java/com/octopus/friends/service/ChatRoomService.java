@@ -37,6 +37,7 @@ import java.util.*;
  * @version 1.0
  * [수정내용] 
  * 예시) [2022-09-17] 주석추가 - 원지윤
+ * [2022-09-21] 채팅방 입장 시 토픽을 생성할 수 있도록 수정 - 원지윤
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -73,6 +74,7 @@ public class ChatRoomService {
     @Transactional
     public CreateChatRoomResponseDto save(final String userId, CreateChatRoomRequestDto request){
         User host = checkValidUser(userId, request.getHostId());
+        log.info(request.toEntity().getChatRoomType().toString());
         ChatRoom chatRoom = chatRoomRepository.save(request.toEntity());
 
         List<ChatRoomRelation> chatRoomRelationList = new ArrayList<>();
@@ -147,6 +149,15 @@ public class ChatRoomService {
         return responses;
     }
 
+    @Transactional
+    public ChatRoomResponseDto findRoomByRoomIdx(final String userId, final Long roomIdx){
+        User user = userRepository.findByUserIdEquals(userId)
+                .orElseThrow(() ->  new CustomerNotFoundException("찾을 수 없는 사용자"));
+        ChatRoom chatRoom = chatRoomRepository.findById(roomIdx)
+                .orElseThrow(() -> new CustomerNotFoundException("찾을 수 없는 방"));
+        ChatRoomResponseDto response = ChatRoomResponseDto.of(chatRoom);
+        return response;
+    }
     /**
      * 참여하고 있던 채팅방 나가기
      * @param userId 로그인한 유저
@@ -187,6 +198,10 @@ public class ChatRoomService {
         return responses;
     }
 
+    /**
+     * 채팅방에 들어갈때 topic생성
+     * @param roomId 입장할 채팅방의 idx
+     */
     public void enterChatRoom(String roomId) {
         ChannelTopic topic = topics.get(roomId);
         if (topic == null) {
