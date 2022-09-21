@@ -22,6 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateChatRoomRequestDto {
     private String hostId;
+    private String roomName;
     private String chatRoomType;
     private List<String> userList;
 
@@ -31,7 +32,8 @@ public class CreateChatRoomRequestDto {
      */
     public ChatRoom toEntity(){
         return ChatRoom.builder()
-                .chatRoomType(ChatRoom.ChatRoomType.valueOf(chatRoomType))
+                .chatRoomType(Enum.valueOf(ChatRoom.ChatRoomType.class,chatRoomType))
+                .roomName(roomName)
                 .hostId(hostId)
                 .uCnt(userList.size())
                 .build();

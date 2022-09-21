@@ -30,12 +30,13 @@ import java.util.List;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
+ * [2022-09-21] 채팅방 입장 시 topic을 생성할 수 있도록 수정
  */
 @Slf4j
 @Tag(name = "chatRoom", description = "채팅방 관리 관련 API")
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/chatRoom")
+@RequestMapping("/api/chat/room")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final ResponseService responseService;
@@ -48,6 +49,7 @@ public class ChatRoomController {
      */
     @PostMapping
     public ResponseEntity<SingleResponse<CreateChatRoomResponseDto>> createChatRoom(@RequestHeader("USER-ID") String userId, @RequestBody CreateChatRoomRequestDto request){
+        System.out.println(request.getChatRoomType());
         CreateChatRoomResponseDto chatRoom = chatRoomService.save(userId,request);
         SingleResponse<CreateChatRoomResponseDto> response = responseService.getSingleResponse(chatRoom,Status.SUCCESS_CREATED_CHATROOM);
         return ResponseEntity.ok().body(response);
@@ -79,6 +81,20 @@ public class ChatRoomController {
     }
 
     /**
+     * 로그인한 유저가 기존의 채팅방에 입장
+     * @param userId 로그인한 유저의 id
+     * @param roomIdx 참여하려는 채팅방의 idx
+     * @return
+     */
+    @GetMapping("/enter/{roomIdx}")
+    public ResponseEntity<SingleResponse<ChatRoomResponseDto>> enterChatRoom(@RequestHeader("USER-ID") String userId, @PathVariable Long roomIdx){
+        chatRoomService.enterChatRoom(roomIdx.toString());
+        ChatRoomResponseDto chatRoomResponseDto = chatRoomService.findRoomByRoomIdx(userId, roomIdx);
+        SingleResponse<ChatRoomResponseDto> response = responseService.getSingleResponse(chatRoomResponseDto, Status.SUCCESS_ENTERED_CHATROOM);
+        return ResponseEntity.ok().body(response);
+    }
+
+    /**
      * 로그인한 유저가 참여중인 모든 채팅방 조회
      * @param userId
      * @return
@@ -87,6 +103,13 @@ public class ChatRoomController {
     public ResponseEntity<SingleResponse<List<ChatRoomRelationResponseDto>>> findAllByUserId(@RequestHeader("USER-ID")String userId){
         List<ChatRoomRelationResponseDto> responses = chatRoomService.findAllByUserId(userId);
         SingleResponse<List<ChatRoomRelationResponseDto>> response = responseService.getSingleResponse(responses,Status.SUCCESS_SEARCHED_CHATROOM);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/{roomIdx}")
+    public ResponseEntity<SingleResponse<ChatRoomResponseDto>> findAllByUserId(@RequestHeader("USER-ID")String userId, @PathVariable("roomIdx") Long chatRoomIdx){
+        ChatRoomResponseDto responses = chatRoomService.findRoomByRoomIdx(userId, chatRoomIdx);
+        SingleResponse<ChatRoomResponseDto> response = responseService.getSingleResponse(responses,Status.SUCCESS_SEARCHED_CHATROOM);
         return ResponseEntity.ok().body(response);
     }
 
