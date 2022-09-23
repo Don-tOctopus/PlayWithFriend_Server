@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
+ * [2022-09-23] 채팅 생성 시 채팅이름 반환 추가 - 원지윤
  */
 
 @Getter
@@ -26,12 +27,14 @@ public class CreateChatRoomResponseDto {
     private Long chatRoomIdx;
     private Long chatRoomRelationIdx;
     private String hostId;
+    private String roomName;
 
     public static CreateChatRoomResponseDto of(ChatRoom chatRoom, ChatRoomRelation chatRoomRelation){
         return new CreateChatRoomResponseDto(
                 chatRoom.getChatRoomIdx(),
                 chatRoomRelation.getRoomRelationIdx(),
-                chatRoomRelation.getUser().getUserId()
+                chatRoomRelation.getUser().getUserId(),
+                chatRoom.getRoomName()
         );
     }
 
