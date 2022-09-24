@@ -14,12 +14,10 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
  * 클래스설명
  * 작성일 2022-09-18
  *
- * @author 원지윤
+ * @author 원지윤, 남유정
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
- * [2022-09-19] 주석추가 - 남유정
- * [2022-09-19] stomp 최대 버퍼 사이즈 설정 - 남유정
  */
 
 @Slf4j
