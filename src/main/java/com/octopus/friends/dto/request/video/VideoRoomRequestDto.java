@@ -1,4 +1,4 @@
-package com.octopus.friends.dto.request;
+package com.octopus.friends.dto.request.video;
 
 import com.octopus.friends.domain.ChatRoom;
 import com.octopus.friends.domain.ChatRoomRelation;

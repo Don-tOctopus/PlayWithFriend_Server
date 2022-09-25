@@ -1,7 +1,6 @@
-package com.octopus.friends.dto.response;
+package com.octopus.friends.dto.response.chat;
 
 import com.octopus.friends.domain.ChatRoom;
-import com.octopus.friends.domain.ChatRoomRelation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

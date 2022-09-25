@@ -1,12 +1,11 @@
 package com.octopus.friends.controller;
 
 import com.octopus.friends.domain.Chat;
-import com.octopus.friends.dto.request.ChatRequestDto;
+import com.octopus.friends.dto.request.chat.ChatRequestDto;
 import com.octopus.friends.service.ChatRoomService;
 import com.octopus.friends.service.RedisPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 

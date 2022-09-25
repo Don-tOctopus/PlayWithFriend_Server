@@ -1,6 +1,6 @@
 package com.octopus.friends.controller;
 
-import com.octopus.friends.dto.request.VideoRoomRequestDto;
+import com.octopus.friends.dto.request.video.VideoRoomRequestDto;
 import com.octopus.friends.utils.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

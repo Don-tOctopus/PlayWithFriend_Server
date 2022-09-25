@@ -3,19 +3,17 @@ package com.octopus.friends.controller;
 import com.octopus.friends.common.domain.SingleResponse;
 import com.octopus.friends.common.domain.enums.Status;
 import com.octopus.friends.common.service.ResponseService;
-import com.octopus.friends.domain.ChatRoomRelation;
-import com.octopus.friends.dto.request.CreateChatRoomRequestDto;
-import com.octopus.friends.dto.request.JoinChatRoomRequestDto;
-import com.octopus.friends.dto.response.ChatRoomRelationResponseDto;
-import com.octopus.friends.dto.response.ChatRoomResponseDto;
-import com.octopus.friends.dto.response.CreateChatRoomResponseDto;
-import com.octopus.friends.dto.response.JoinChatRoomResponseDto;
+import com.octopus.friends.dto.request.chat.CreateChatRoomRequestDto;
+import com.octopus.friends.dto.request.chat.JoinChatRoomRequestDto;
+import com.octopus.friends.dto.response.chat.ChatRoomRelationResponseDto;
+import com.octopus.friends.dto.response.chat.ChatRoomResponseDto;
+import com.octopus.friends.dto.response.chat.CreateChatRoomResponseDto;
+import com.octopus.friends.dto.response.chat.JoinChatRoomResponseDto;
 import com.octopus.friends.service.ChatRoomService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,7 +47,6 @@ public class ChatRoomController {
      */
     @PostMapping
     public ResponseEntity<SingleResponse<CreateChatRoomResponseDto>> createChatRoom(@RequestHeader("USER-ID") String userId, @RequestBody CreateChatRoomRequestDto request){
-        System.out.println(request.getChatRoomType());
         CreateChatRoomResponseDto chatRoom = chatRoomService.save(userId,request);
         SingleResponse<CreateChatRoomResponseDto> response = responseService.getSingleResponse(chatRoom,Status.SUCCESS_CREATED_CHATROOM);
         return ResponseEntity.ok().body(response);

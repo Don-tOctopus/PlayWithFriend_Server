@@ -1,4 +1,4 @@
-package com.octopus.friends.dto.request;
+package com.octopus.friends.dto.request.chat;
 
 import com.octopus.friends.domain.ChatRoom;
 import lombok.*;
