@@ -49,17 +49,16 @@ public class VideoRoomController {
 
     /**
      * 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
-     * @param chatRoomIdx user가 입장한 방의 Idx
      * @param sessionId 입장한 user의 세션 Id
      * @param ob chatRoom user의 세션 정보
      * @return 전체 세션 정보 리스트
      */
     @MessageMapping("/video/joined-room-info")
     @SendTo("/sub/video/joined-room-info")
-    private ArrayList<JoinChatRoomRequestDto> joinRoom(Long chatRoomIdx, @Header("simpSessionId") String sessionId, JSONObject ob) {
+    private ArrayList<JoinChatRoomRequestDto> joinRoom(@Header("simpSessionId") String sessionId, JSONObject ob) {
 
         // 현재 들어온 세션 저장
-        chatRoomIdxList.add(new JoinChatRoomRequestDto(chatRoomIdx,(String) ob.get("from"), sessionId));
+        chatRoomIdxList.add(new JoinChatRoomRequestDto(1L, (String) ob.get("from"), sessionId));
 
         return chatRoomIdxList;
     }
@@ -81,7 +80,7 @@ public class VideoRoomController {
     @SendTo("/sub/video/caller-info")
     private Map<String, Object> caller(JSONObject ob) {
 
-        log.info(ob.toJSONString());
+//        log.info(ob.toJSONString());
 
         Map<String, Object> data = new HashMap<>();
         data.put("toCall", ob.get("toCall"));
