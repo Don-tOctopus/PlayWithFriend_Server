@@ -1,6 +1,6 @@
 package com.octopus.friends.controller;
 
-import com.octopus.friends.dto.request.JoinChatRoomRequestDto;
+import com.octopus.friends.dto.request.VideoRoomRequestDto;
 import com.octopus.friends.utils.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ import java.util.Map;
 public class VideoRoomController {
 
     // 세션 리스트
-    private final ArrayList<JoinChatRoomRequestDto> chatRoomIdxList;
+    private final ArrayList<VideoRoomRequestDto> chatRoomIdxList;
     private final SimpMessagingTemplate template;
 
     /**
@@ -55,10 +55,10 @@ public class VideoRoomController {
      */
     @MessageMapping("/video/joined-room-info")
     @SendTo("/sub/video/joined-room-info")
-    private ArrayList<JoinChatRoomRequestDto> joinRoom(@Header("simpSessionId") String sessionId, JSONObject ob) {
+    private ArrayList<VideoRoomRequestDto> joinRoom(@Header("simpSessionId") String sessionId, JSONObject ob) {
 
         // 현재 들어온 세션 저장
-        chatRoomIdxList.add(new JoinChatRoomRequestDto(1L, (String) ob.get("from"), sessionId));
+        chatRoomIdxList.add(new VideoRoomRequestDto((String) ob.get("from"), sessionId));
 
         return chatRoomIdxList;
     }
@@ -163,7 +163,7 @@ public class VideoRoomController {
         String removedID = "";
 
         // close된 세션의 id 저장
-        for (JoinChatRoomRequestDto session : chatRoomIdxList) {
+        for (VideoRoomRequestDto session : chatRoomIdxList) {
             if (session.getSessionId().equals(event.getSessionId())) {
                 removedID = session.getUserId();
                 chatRoomIdxList.remove(session);
