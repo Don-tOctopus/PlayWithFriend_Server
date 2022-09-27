@@ -30,7 +30,9 @@ public enum Status {
     SUCCESS_CREATED_CHATROOM(201, "채팅방 생성 성공"),
 
     //40x
-    NOT_SEARCHED_USER(404, "찾을 수 없는 유저");
+    NOT_SEARCHED_USER(404, "찾을 수 없는 유저"),
+    BAD_REQUEST(404,"옳지 않은 요청입니다."),
+    NOT_SEARCHED_CHATROOM(404,"찾을 수 없는 채팅방입니다.");
 
     private final int code;
     private final String message;

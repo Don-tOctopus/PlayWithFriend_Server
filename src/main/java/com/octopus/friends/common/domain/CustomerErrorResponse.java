@@ -25,7 +25,13 @@ public class CustomerErrorResponse extends CommonResponse{
     private String message;
     private long timeStamp;
 
-    public CustomerErrorResponse(int code,String message, long timeStamp){
+    public CustomerErrorResponse(Status status, long timeStamp){
+        this.code = status.getCode();
+        this.message = status.getMessage();
+        this.timeStamp = timeStamp;
+    }
+
+    public CustomerErrorResponse(int code, String message, long timeStamp){
         this.code = code;
         this.message = message;
         this.timeStamp = timeStamp;
