@@ -18,6 +18,7 @@ import lombok.Setter;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
+ * [2022-09-27] userId -> userEmail로 수정
  */
 @Getter
 @Setter
@@ -25,7 +26,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class JoinChatRoomRequestDto {
     private Long chatRoomIdx;
-    private String userId;
+    private String userEmail;
 
     /**
      *

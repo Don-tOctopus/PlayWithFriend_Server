@@ -17,6 +17,7 @@ import javax.persistence.*;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
+ * [2022-09-27] userId -> userEmail로 수정
  */
 
 @Entity
@@ -34,9 +35,9 @@ public class ChatRoomRelation {
     @JoinColumn(name = "chatroom_idx")
     private ChatRoom chatRoom;
 
-    @Schema(description = "채팅방에 속한 user의 id")
+    @Schema(description = "채팅방에 속한 user의 email")
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_email")
     private User user;
 
     @Schema(description = "채팅방 참여 상태", defaultValue = "true", allowableValues = {"true","false"})
