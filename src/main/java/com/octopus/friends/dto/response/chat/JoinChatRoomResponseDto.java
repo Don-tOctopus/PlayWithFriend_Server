@@ -1,4 +1,4 @@
-package com.octopus.friends.dto.response;
+package com.octopus.friends.dto.response.chat;
 
 import com.octopus.friends.domain.ChatRoom;
 import com.octopus.friends.domain.ChatRoomRelation;
@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
+ * [2022-09-27] userId -> userEmail로 수정
  */
 @Getter
 @AllArgsConstructor
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class JoinChatRoomResponseDto {
     private Long chatRoomIdx;
     private Long roomRelationIdx;
-    private String userId;
+    private String userEmail;
 
     /**
      *
@@ -35,7 +36,7 @@ public class JoinChatRoomResponseDto {
         return new JoinChatRoomResponseDto(
                 chatRoom.getChatRoomIdx(),
                 chatRoomRelation.getRoomRelationIdx(),
-                chatRoomRelation.getUser().getUserId()
+                chatRoomRelation.getUser().getEmail()
         );
     }
 }

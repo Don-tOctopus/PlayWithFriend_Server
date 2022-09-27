@@ -5,12 +5,12 @@ import com.octopus.friends.common.exception.CustomerNotFoundException;
 import com.octopus.friends.domain.ChatRoom;
 import com.octopus.friends.domain.ChatRoomRelation;
 import com.octopus.friends.domain.User;
-import com.octopus.friends.dto.request.CreateChatRoomRequestDto;
-import com.octopus.friends.dto.request.JoinChatRoomRequestDto;
-import com.octopus.friends.dto.response.ChatRoomRelationResponseDto;
-import com.octopus.friends.dto.response.ChatRoomResponseDto;
-import com.octopus.friends.dto.response.CreateChatRoomResponseDto;
-import com.octopus.friends.dto.response.JoinChatRoomResponseDto;
+import com.octopus.friends.dto.request.chat.CreateChatRoomRequestDto;
+import com.octopus.friends.dto.request.chat.JoinChatRoomRequestDto;
+import com.octopus.friends.dto.response.chat.ChatRoomRelationResponseDto;
+import com.octopus.friends.dto.response.chat.ChatRoomResponseDto;
+import com.octopus.friends.dto.response.chat.CreateChatRoomResponseDto;
+import com.octopus.friends.dto.response.chat.JoinChatRoomResponseDto;
 import com.octopus.friends.repository.ChatRoomRelationRepository;
 import com.octopus.friends.repository.ChatRoomRepository;
 import com.octopus.friends.repository.UserRepository;
@@ -38,6 +38,8 @@ import java.util.*;
  * [수정내용] 
  * 예시) [2022-09-17] 주석추가 - 원지윤
  * [2022-09-21] 채팅방 입장 시 토픽을 생성할 수 있도록 수정 - 원지윤
+ * [2022-09-27] userId -> userEmail로 수정
+ * [2022-09-27] findByUserAndChatRoom -> findByEmail 수정
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -67,19 +69,19 @@ public class ChatRoomService {
 
     /**
      * 생성한 채팅방을 DB에 저장
-     * @param userId 로그인한 유저의 id
+     * @param userEmail 로그인한 유저의 id
      * @param request 생성하려는 채팅방 정보
      * @return
      */
     @Transactional
-    public CreateChatRoomResponseDto save(final String userId, CreateChatRoomRequestDto request){
-        User host = checkValidUser(userId, request.getHostId());
-        log.info(request.toEntity().getChatRoomType().toString());
+    public CreateChatRoomResponseDto save(final String userEmail, CreateChatRoomRequestDto request){
+        User host = checkValidUser(userEmail, request.getHostId());
+
         ChatRoom chatRoom = chatRoomRepository.save(request.toEntity());
 
         List<ChatRoomRelation> chatRoomRelationList = new ArrayList<>();
-        for(String invitedId: request.getUserList()){
-            Optional<User> user = userRepository.findByUserIdEquals(invitedId);
+        for(String invitedEmail: request.getUserList()){
+            Optional<User> user = userRepository.findByEmail(invitedEmail);
 
             if(!user.isPresent()){
                 continue;
@@ -103,15 +105,15 @@ public class ChatRoomService {
 
     /**
      * 채팅방을 생설할 때 생성하는 유저와 로그인한 유저가 일치하는 지 확인
-     * @param userId 로그인한 유저의 id
+     * @param userEmail 로그인한 유저의 id
      * @param hostId 채팅방을 생성하려는 유저의 id
      * @return 유저의 정보
      */
-    private User checkValidUser(String userId, String hostId)  {
-        if(!userId.equals(hostId)){
+    private User checkValidUser(String userEmail, String hostId)  {
+        if(!userEmail.equals(hostId)){
             throw new RuntimeException("옳지 않은 접근입니다");
         }
-        return userRepository.findByUserIdEquals(userId)
+        return userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_USER));
     }
 
@@ -124,7 +126,7 @@ public class ChatRoomService {
     public JoinChatRoomResponseDto joinChatRoom(JoinChatRoomRequestDto request){
         ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoomIdx())
                 .orElseThrow(() -> new EntityNotFoundException("찾을 수 없는 채팅방"));
-        User user = userRepository.findByUserIdEquals(request.getUserId())
+        User user = userRepository.findByEmail(request.getUserEmail())
                 .orElseThrow(()-> new EntityNotFoundException("찾을 수 없는 사용자"));
 
         ChatRoomRelation chatRoomRelation = request.toEntity(chatRoom, user);
@@ -134,24 +136,27 @@ public class ChatRoomService {
 
     /**
      * 로그인한 유저가 속한 모든 채팅방 조회
-     * @param userId
+     * @param userEmail 로그인한 user의 email
      * @return
      */
     @Transactional
-    public List<ChatRoomRelationResponseDto> findAllByUserId(final String userId){
-        User user = userRepository.findByUserIdEquals(userId)
+    public List<ChatRoomRelationResponseDto> findAllByUserId(final String userEmail){
+        User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() ->  new EntityNotFoundException("찾을 수 없는 사용자"));
         List<ChatRoomRelation> chatRoomRelationList = chatRoomRelationRepository.findAllByUser(user);
         List<ChatRoomRelationResponseDto> responses = new ArrayList<>();
         for(ChatRoomRelation chatRoomRelation: chatRoomRelationList){
-            responses.add(ChatRoomRelationResponseDto.of(chatRoomRelation));
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomRelation.getChatRoom().getChatRoomIdx())
+                    .orElseThrow(() -> new CustomerNotFoundException("찾을 수 없는 채팅방"));
+            if(chatRoomRelation.isStatus())
+                responses.add(ChatRoomRelationResponseDto.of(chatRoomRelation,chatRoom));
         }
         return responses;
     }
 
     @Transactional
-    public ChatRoomResponseDto findRoomByRoomIdx(final String userId, final Long roomIdx){
-        User user = userRepository.findByUserIdEquals(userId)
+    public ChatRoomResponseDto findRoomByRoomIdx(final String userEmail, final Long roomIdx){
+        User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() ->  new CustomerNotFoundException("찾을 수 없는 사용자"));
         ChatRoom chatRoom = chatRoomRepository.findById(roomIdx)
                 .orElseThrow(() -> new CustomerNotFoundException("찾을 수 없는 방"));
@@ -160,15 +165,15 @@ public class ChatRoomService {
     }
     /**
      * 참여하고 있던 채팅방 나가기
-     * @param userId 로그인한 유저
+     * @param userEmail 로그인한 유저
      * @param roomIdx 나가고 싶은 채팅방의 idx
      * @return ChatRoomRelationResponseDto
      */
     @Transactional
-    public ChatRoomRelationResponseDto leaveChatRoom(final String userId, final Long roomIdx){
+    public ChatRoomRelationResponseDto leaveChatRoom(final String userEmail, final Long roomIdx){
         ChatRoom chatRoom = chatRoomRepository.findById(roomIdx)
                 .orElseThrow(()-> new EntityNotFoundException("찾을 수 없는 채팅방"));
-        User user = userRepository.findByUserIdEquals(userId)
+        User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new EntityNotFoundException("찾을 수 없는 사용자"));
 
         ChatRoomRelation chatRoomRelation = chatRoomRelationRepository.findByUserAndChatRoom(user, chatRoom);
@@ -181,7 +186,7 @@ public class ChatRoomService {
             opsHashChatRoom.delete(CHAT_ROOMS, chatRoom.getChatRoomIdx().toString());
         }
 
-        ChatRoomRelationResponseDto response = ChatRoomRelationResponseDto.of(chatRoomRelation);
+        ChatRoomRelationResponseDto response = ChatRoomRelationResponseDto.of(chatRoomRelation,chatRoom);
         return response;
     }
 

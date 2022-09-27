@@ -73,7 +73,7 @@ public class ChatRoom implements Serializable {
 
     /**
      * ChatRoom 엔티티의 builder
-     * @param hostId 채팅방을 생성한 user의 아이디
+     * @param hostId 채팅방을 생성한 user의 이메일
      * @param chatRoomType 생성한 채팅방의 종류
      * @param uCnt 채팅방 생성 초기의 채팅방에 있는 유저의 숫자
      */
