@@ -28,8 +28,9 @@ import java.util.List;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
- * [2022-09-21] 채팅방 입장 시 topic을 생성할 수 있도록 수정
- * [2022-09-27] userId -> userEmail로 수정
+ * [2022-09-21] 채팅방 입장 시 topic을 생성할 수 있도록 수정 - 원지윤
+ * [2022-09-27] userId -> userEmail로 수정 - 원지윤
+ * [2022-09-27] 주석 추가 - 원지윤
  */
 @Slf4j
 @Tag(name = "chatRoom", description = "채팅방 관리 관련 API")
@@ -47,7 +48,8 @@ public class ChatRoomController {
      * @return 생성된 채팅방의 정보와 response 상태
      */
     @PostMapping
-    public ResponseEntity<SingleResponse<CreateChatRoomResponseDto>> createChatRoom(@RequestHeader("USER-EMAIL") String userEmail, @RequestBody CreateChatRoomRequestDto request){
+    public ResponseEntity<SingleResponse<CreateChatRoomResponseDto>> createChatRoom(@RequestHeader("USER-EMAIL") String userEmail,
+                                                                                    @RequestBody CreateChatRoomRequestDto request){
         CreateChatRoomResponseDto chatRoom = chatRoomService.save(userEmail,request);
         SingleResponse<CreateChatRoomResponseDto> response = responseService.getSingleResponse(chatRoom,Status.SUCCESS_CREATED_CHATROOM);
         return ResponseEntity.ok().body(response);
@@ -72,7 +74,8 @@ public class ChatRoomController {
      * @return 요청에 대한 응답
      */
     @PostMapping("/leave/{roomIdx}")
-    public ResponseEntity<SingleResponse<ChatRoomRelationResponseDto>> leaveChatRoom(@RequestHeader("USER-EMAIL") String userEmail, @PathVariable Long roomIdx){
+    public ResponseEntity<SingleResponse<ChatRoomRelationResponseDto>> leaveChatRoom(@RequestHeader("USER-EMAIL") String userEmail,
+                                                                                     @PathVariable Long roomIdx){
         ChatRoomRelationResponseDto chatRoomRelation = chatRoomService.leaveChatRoom(userEmail, roomIdx);
         SingleResponse<ChatRoomRelationResponseDto> response = responseService.getSingleResponse(chatRoomRelation, Status.SUCCESS_DELETED_CHATROOM);
         return  ResponseEntity.ok().body(response);
@@ -85,7 +88,8 @@ public class ChatRoomController {
      * @return
      */
     @GetMapping("/enter/{roomIdx}")
-    public ResponseEntity<SingleResponse<ChatRoomResponseDto>> enterChatRoom(@RequestHeader("USER-EMAIL") String userEmail, @PathVariable Long roomIdx){
+    public ResponseEntity<SingleResponse<ChatRoomResponseDto>> enterChatRoom(@RequestHeader("USER-EMAIL") String userEmail,
+                                                                             @PathVariable Long roomIdx){
         chatRoomService.enterChatRoom(roomIdx.toString());
         ChatRoomResponseDto chatRoomResponseDto = chatRoomService.findRoomByRoomIdx(userEmail, roomIdx);
         SingleResponse<ChatRoomResponseDto> response = responseService.getSingleResponse(chatRoomResponseDto, Status.SUCCESS_ENTERED_CHATROOM);
@@ -111,7 +115,8 @@ public class ChatRoomController {
      * @return
      */
     @GetMapping("/{roomIdx}")
-    public ResponseEntity<SingleResponse<ChatRoomResponseDto>> findAllByUserId(@RequestHeader("USER-EMAIL")String userEmail, @PathVariable("roomIdx") Long chatRoomIdx){
+    public ResponseEntity<SingleResponse<ChatRoomResponseDto>> findAllByUserId(@RequestHeader("USER-EMAIL")String userEmail,
+                                                                               @PathVariable("roomIdx") Long chatRoomIdx){
         ChatRoomResponseDto responses = chatRoomService.findRoomByRoomIdx(userEmail, chatRoomIdx);
         SingleResponse<ChatRoomResponseDto> response = responseService.getSingleResponse(responses,Status.SUCCESS_SEARCHED_CHATROOM);
         return ResponseEntity.ok().body(response);
@@ -124,7 +129,8 @@ public class ChatRoomController {
     @GetMapping("/all")
     public ResponseEntity<SingleResponse<List<ChatRoomResponseDto>>> findAll(){
         List<ChatRoomResponseDto> responses = chatRoomService.findAll();
-        SingleResponse<List<ChatRoomResponseDto>> response = responseService.getSingleResponse(responses,Status.SUCCESS_SEARCHED_CHATROOM);
+        SingleResponse<List<ChatRoomResponseDto>> response =
+                responseService.getSingleResponse(responses,Status.SUCCESS_SEARCHED_CHATROOM);
         return ResponseEntity.ok().body(response);
     }
 

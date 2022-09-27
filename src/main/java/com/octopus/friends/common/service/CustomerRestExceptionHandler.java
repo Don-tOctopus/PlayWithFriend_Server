@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
+ * [2022-09-27] Status를 매개변수로 받는 생성자 추가 - 원지윤
  */
 
 @RestControllerAdvice("com.octopus.friends.controller")
@@ -24,8 +25,7 @@ public class CustomerRestExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<CustomerErrorResponse> handleException(CustomerNotFoundException exc){
         CustomerErrorResponse error = new CustomerErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                exc.getMessage(),
+                exc.getStatus(),
                 System.currentTimeMillis());
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
