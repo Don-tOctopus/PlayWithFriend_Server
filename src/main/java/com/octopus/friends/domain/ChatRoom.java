@@ -25,6 +25,7 @@ import java.util.List;
  * [수정내용] 
  * 예시) [2022-09-17] 주석추가 - 원지윤
  * [2022-09-19] 스웨거 어노테이션 추가 - 원지윤
+ * [2022-09-26] 오타 수정 - 남유정
  */
 @Entity
 @Getter
@@ -62,7 +63,7 @@ public class ChatRoom implements Serializable {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Schema(description = "채팅방의 타입", example = "TEXT", allowableValues = {"TEXT", "VEDIO"})
+    @Schema(description = "채팅방의 타입", example = "TEXT", allowableValues = {"TEXT", "VIDEO"})
     @Column(nullable = false, columnDefinition = "varchar(5)")
     @Enumerated(EnumType.STRING)
     private ChatRoomType chatRoomType;
