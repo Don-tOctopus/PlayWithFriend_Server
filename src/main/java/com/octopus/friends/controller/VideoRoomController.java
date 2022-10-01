@@ -1,8 +1,20 @@
 package com.octopus.friends.controller;
 
+import com.octopus.friends.common.domain.SingleResponse;
+import com.octopus.friends.common.domain.enums.Status;
+import com.octopus.friends.common.service.ResponseService;
+import com.octopus.friends.dto.request.chat.CreateChatRoomRequestDto;
+import com.octopus.friends.dto.request.chat.JoinChatRoomRequestDto;
+import com.octopus.friends.dto.request.video.JoinVideoRoomRequestDto;
 import com.octopus.friends.dto.request.video.VideoRoomRequestDto;
+import com.octopus.friends.dto.response.chat.CreateChatRoomResponseDto;
+import com.octopus.friends.dto.response.video.CreateVideoRoomResponseDto;
+import com.octopus.friends.dto.response.video.JoinVideoRoomResponseDto;
+import com.octopus.friends.dto.response.video.VideoRoomResponseDto;
+import com.octopus.friends.service.VideoRoomService;
 import com.octopus.friends.utils.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.JSONParser;
@@ -11,7 +23,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -34,42 +46,58 @@ import java.util.Map;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 남유정
+ * [2022-10-01] swagger tag 수정 - 남유정
+ * [2022-10-01] 기존 채팅방 입장 메소드 수정 - 남유정
  */
 
 @Slf4j
 @RestController
-@Tag(name = "chatRoom", description = "채팅방 관리 관련 API")
-@RequiredArgsConstructor
-@CrossOrigin(origins = {Constants.API_URL, Constants.API_URL_DEV}, allowCredentials = "true")
+@Tag(name = "videoRoom", description = "화상 채팅방 관리 관련 API")
+@AllArgsConstructor
+//@CrossOrigin(origins = {Constants.API_URL, Constants.API_URL_DEV}, allowCredentials = "true")
+@RequestMapping("/api/video/room")
 public class VideoRoomController {
 
     // 세션 리스트
     private final ArrayList<VideoRoomRequestDto> chatRoomIdxList;
     private final SimpMessagingTemplate template;
 
+    private final VideoRoomService videoRoomService;
+    private final ResponseService responseService;
+
     /**
-     * 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
-     * @param sessionId 입장한 user의 세션 Id
-     * @param ob chatRoom user의 세션 정보
-     * @return 전체 세션 정보 리스트
+     * 기본 채팅방 입장
+     * @param request
+     * @return 입장한 채팅방의 정보와 response 상태
      */
-    @MessageMapping("/video/joined-room-info")
-    @SendTo("/sub/video/joined-room-info")
-    private ArrayList<VideoRoomRequestDto> joinRoom(@Header("simpSessionId") String sessionId, JSONObject ob) {
-
+//    @MessageMapping("/video/joined-room-info")
+//    @SendTo("/sub/video/joined-room-info")
+    @PostMapping("/enter/{roomIdx}")
+    public ResponseEntity<SingleResponse<JoinVideoRoomResponseDto>> enterVideoRoom(@RequestBody JoinVideoRoomRequestDto
+                                                                                                            request) {
         // 현재 들어온 세션 저장
-        chatRoomIdxList.add(new VideoRoomRequestDto((String) ob.get("from"), sessionId));
+//        chatRoomIdxList.add(new VideoRoomRequestDto((String) ob.get("from"), sessionId));
+//        return chatRoomIdxList;
+// 채팅방이름으로 들어오는거 IDX 변환 필요 (Long roomIdx = videoRoomService.findRoomIdxByRoomName(roomName))
+        log.error("heyhey");
+        JoinVideoRoomResponseDto joinVideoRoom = videoRoomService.joinVideoRoom(request);
+        SingleResponse<JoinVideoRoomResponseDto> response = responseService.getSingleResponse(joinVideoRoom,
+                                                                                    Status.SUCCESS_ENTERED_CHATROOM);
 
-        return chatRoomIdxList;
+        return ResponseEntity.ok().body(response);
     }
 
-    @ResponseBody
-    @GetMapping("/test")
-    public String test(){
-
-        log.info("qweqwe");
-        return "qwe";
-    }
+//    @PostMapping("/")
+//    public void hello(){
+//        log.error("hihihihi");
+//    }
+//    public ResponseEntity<SingleResponse<CreateVideoRoomResponseDto>> createVieoRoom(@RequestHeader("USER-EMAIL") String userEmail,
+//                                                                                      @RequestBody CreateChatRoomRequestDto request) {
+//        CreateChatRoomResponseDto chatRoom = videoRoomService.save(userEmail, request);
+//        singleResponse<CreateVideoRoomResponseDto> response = ;
+//
+//        return ResponseEntity.ok().body(response);
+//    }
 
     /**
      * caller들의 정보를 다른 callee에게 전송
