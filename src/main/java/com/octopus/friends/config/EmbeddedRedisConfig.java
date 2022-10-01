@@ -18,20 +18,24 @@ import javax.annotation.PreDestroy;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
+ * [2022-10-01] redisServer 상태 확인 후 redisSart하도록 변경 - 원지윤
  */
 @Profile("local")
 @Configuration
 public class EmbeddedRedisConfig {
     @Value("${spring.redis.port}")
     private int redisPort;
-    private RedisServer redisServer;
+    private RedisServer redisServer = null;
+
     @PostConstruct
     public void redisServer() {
-        redisServer = RedisServer.builder()
-                .port(redisPort)
-                .setting("maxmemory 128M")
-                .build();
-        redisServer.start();
+        if(redisServer == null || !redisServer.isActive()) {
+            redisServer = RedisServer.builder()
+                    .port(redisPort)
+                    .setting("maxmemory 128M")
+                    .build();
+            redisServer.start();
+        }
     }
     @PreDestroy
     public void stopRedis() {

@@ -19,7 +19,6 @@ import javax.persistence.*;
  * 예시) [2022-09-17] 주석추가 - 원지윤
  * [2022-09-27] userId -> userEmail로 수정 - 원지윤
  */
-
 @Entity
 @Getter
 @Setter
