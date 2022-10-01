@@ -40,7 +40,7 @@ import java.util.*;
  * [2022-09-21] 채팅방 입장 시 토픽을 생성할 수 있도록 수정 - 원지윤
  * [2022-09-27] userId -> userEmail로 수정 - 원지윤
  * [2022-09-27] findByUserAndChatRoom -> findByEmail 수정 - 원지윤
- * [2022-09-27] exception 매개변수 status Enum으로 변경
+ * [2022-09-27] exception 매개변수 status Enum으로 변경 - 원지윤
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -99,6 +99,8 @@ public class ChatRoomService {
         ChatRoomRelation hostRoom = chatRoomRelationRepository.findByUserAndChatRoom(host, chatRoom);
 
         CreateChatRoomResponseDto response = CreateChatRoomResponseDto.of(hostRoom.getChatRoom(), hostRoom);
+
+        //서버간 채팅방 공유를 위해 redis hash에 저장
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getChatRoomIdx().toString(), chatRoom);
         return response;
 
@@ -215,9 +217,13 @@ public class ChatRoomService {
      * @param roomId 입장할 채팅방의 idx
      */
     public void enterChatRoom(String roomId) {
+        //roomId를 key로 가진 topic을 가져옴
         ChannelTopic topic = topics.get(roomId);
+        //가져온 topic이 null인 경우
         if (topic == null) {
+            //roomId를 key로 새로운 topic생성
             topic = new ChannelTopic(roomId);
+            //
             redisMessageListener.addMessageListener(redisSubscriber, topic);
             topics.put(roomId, topic);
         }
