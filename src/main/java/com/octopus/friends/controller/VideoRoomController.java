@@ -5,6 +5,7 @@ import com.octopus.friends.common.domain.enums.Status;
 import com.octopus.friends.common.service.ResponseService;
 import com.octopus.friends.dto.request.chat.CreateChatRoomRequestDto;
 import com.octopus.friends.dto.request.chat.JoinChatRoomRequestDto;
+import com.octopus.friends.dto.request.video.CreateVideoRoomRequestDto;
 import com.octopus.friends.dto.request.video.JoinVideoRoomRequestDto;
 import com.octopus.friends.dto.request.video.VideoRoomRequestDto;
 import com.octopus.friends.dto.response.chat.CreateChatRoomResponseDto;
@@ -67,19 +68,15 @@ public class VideoRoomController {
 
     /**
      * 기본 채팅방 입장
-     * @param request
+     * @param request userId와 채팅방 이름
      * @return 입장한 채팅방의 정보와 response 상태
      */
 //    @MessageMapping("/video/joined-room-info")
 //    @SendTo("/sub/video/joined-room-info")
-    @PostMapping("/enter/{roomIdx}")
+    @PostMapping("/enter")
     public ResponseEntity<SingleResponse<JoinVideoRoomResponseDto>> enterVideoRoom(@RequestBody JoinVideoRoomRequestDto
                                                                                                             request) {
-        // 현재 들어온 세션 저장
-//        chatRoomIdxList.add(new VideoRoomRequestDto((String) ob.get("from"), sessionId));
-//        return chatRoomIdxList;
-// 채팅방이름으로 들어오는거 IDX 변환 필요 (Long roomIdx = videoRoomService.findRoomIdxByRoomName(roomName))
-        log.error("heyhey");
+
         JoinVideoRoomResponseDto joinVideoRoom = videoRoomService.joinVideoRoom(request);
         SingleResponse<JoinVideoRoomResponseDto> response = responseService.getSingleResponse(joinVideoRoom,
                                                                                     Status.SUCCESS_ENTERED_CHATROOM);
@@ -87,14 +84,30 @@ public class VideoRoomController {
         return ResponseEntity.ok().body(response);
     }
 
-//    @PostMapping("/")
-//    public void hello(){
-//        log.error("hihihihi");
-//    }
-//    public ResponseEntity<SingleResponse<CreateVideoRoomResponseDto>> createVieoRoom(@RequestHeader("USER-EMAIL") String userEmail,
-//                                                                                      @RequestBody CreateChatRoomRequestDto request) {
-//        CreateChatRoomResponseDto chatRoom = videoRoomService.save(userEmail, request);
-//        singleResponse<CreateVideoRoomResponseDto> response = ;
+    //TESTTESTTESTTESTTESTTESTTESTTESTTESTTEST
+    @PostMapping("/enter/go")
+    public JoinVideoRoomResponseDto gogo(@RequestBody JoinVideoRoomRequestDto request){
+
+        JoinVideoRoomResponseDto joinVideoRoom = videoRoomService.joinVideoRoom(request);
+        log.error(request.getUserId());
+//        SingleResponse<JoinVideoRoomResponseDto> response = responseService.getSingleResponse(joinVideoRoom,
+//                Status.SUCCESS_ENTERED_CHATROOM);
+        return joinVideoRoom;
+    }
+
+    /**
+     * 채팅방 생성
+     * @param userEmail 채팅방 생성하려는 user
+     * @param request
+     * @return
+     */
+//    public ResponseEntity<SingleResponse<CreateVideoRoomResponseDto>> createVieoRoom
+//                                                                    (@RequestHeader("USER-EMAIL") String userEmail,
+//                                                                    @RequestBody CreateVideoRoomRequestDto request) {
+//
+//        CreateVideoRoomResponseDto chatRoom = videoRoomService.save(userEmail, request);
+//        SingleResponse<CreateVideoRoomResponseDto> response = responseService.getSingleResponse(chatRoom,
+//                                                                                    Status.SUCCESS_ENTERED_CHATROOM);
 //
 //        return ResponseEntity.ok().body(response);
 //    }

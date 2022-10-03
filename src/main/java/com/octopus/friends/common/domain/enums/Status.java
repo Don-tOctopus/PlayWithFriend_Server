@@ -13,6 +13,7 @@ import lombok.Getter;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
+ * [2022-10-03] 채팅방 비밀번호 불일치 추가 - 남유정
  */
 @Getter
 @AllArgsConstructor
@@ -32,7 +33,8 @@ public enum Status {
     //40x
     NOT_SEARCHED_USER(404, "찾을 수 없는 유저"),
     BAD_REQUEST(404,"옳지 않은 요청입니다."),
-    NOT_SEARCHED_CHATROOM(404,"찾을 수 없는 채팅방입니다.");
+    NOT_SEARCHED_CHATROOM(404,"찾을 수 없는 채팅방입니다."),
+    NOT_COINCIDE_PASSWORD(405,"일치하지 않는 비밀번호입니다.");
 
     private final int code;
     private final String message;
