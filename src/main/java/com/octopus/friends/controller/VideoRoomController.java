@@ -118,16 +118,17 @@ public class VideoRoomController {
      * @param request
      * @return
      */
-//    public ResponseEntity<SingleResponse<CreateVideoRoomResponseDto>> createVideoRoom
-//                                                                    (@RequestHeader("USER-EMAIL") String userEmail,
-//                                                                    @RequestBody CreateVideoRoomRequestDto request) {
-//
-//        CreateVideoRoomResponseDto chatRoom = videoRoomService.save(userEmail, request);
-//        SingleResponse<CreateVideoRoomResponseDto> response = responseService.getSingleResponse(chatRoom,
-//                                                                                    Status.SUCCESS_ENTERED_CHATROOM);
-//
-//        return ResponseEntity.ok().body(response);
-//    }
+      @PostMapping("/create")
+    public ResponseEntity<SingleResponse<CreateVideoRoomResponseDto>> createVideoRoom
+                                                                    (@RequestHeader("USER-EMAIL") String userEmail,
+                                                                    @RequestBody CreateVideoRoomRequestDto request) {
+
+        CreateVideoRoomResponseDto chatRoom = videoRoomService.save(userEmail, request);
+        SingleResponse<CreateVideoRoomResponseDto> response = responseService.getSingleResponse(chatRoom,
+                                                                                    Status.SUCCESS_ENTERED_CHATROOM);
+
+        return ResponseEntity.ok().body(response);
+    }
 
     /**
      * caller들의 정보를 다른 callee에게 전송
