@@ -10,6 +10,7 @@ import com.octopus.friends.dto.request.video.CreateVideoRoomRequestDto;
 import com.octopus.friends.dto.request.video.JoinVideoRoomRequestDto;
 import com.octopus.friends.dto.response.chat.ChatRoomRelationResponseDto;
 import com.octopus.friends.dto.response.chat.ChatRoomResponseDto;
+import com.octopus.friends.dto.response.chat.CreateChatRoomResponseDto;
 import com.octopus.friends.dto.response.chat.JoinChatRoomResponseDto;
 import com.octopus.friends.dto.response.video.CreateVideoRoomResponseDto;
 import com.octopus.friends.dto.response.video.JoinVideoRoomResponseDto;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 패키지명 com.octopus.friends.service
@@ -104,6 +106,39 @@ public class VideoRoomService {
                 responses.add(VideoRoomRelationResponseDto.of(chatRoomRelation, chatRoom));
         }
         return responses;
+    }
+
+    /**
+     * 생성된 채팅방 저장
+     * @param userEmail 방 생성하는 hostEmail
+     * @param request 방생성 시 필요한 채팅방 정보
+     * @return
+     */
+    public CreateVideoRoomResponseDto save(final String userEmail, CreateVideoRoomRequestDto request){
+        User host = checkValidUser(userEmail, request.getHostId());
+
+        ChatRoom chatRoom = chatRoomRepository.save(request.toEntity());
+
+        List<ChatRoomRelation> chatRoomRelationList = new ArrayList<>();
+
+        for(String invitedUser : request.getUserList()) {
+            Optional<User> user = userRepository.findByEmail(invitedUser);
+
+            if(!user.isPresent())
+                continue;
+
+            ChatRoomRelation chatRoomRelation = ChatRoomRelation.builder()
+                    .chatRoom(chatRoom)
+                    .user(user.get())
+                    .build();
+
+            ChatRoomRelation re = chatRoomRelationRepository.save(chatRoomRelation);
+        }
+
+        ChatRoomRelation hostRoomRelation = chatRoomRelationRepository.findByUserAndChatRoom(host, chatRoom);
+        CreateVideoRoomResponseDto response = CreateVideoRoomResponseDto.of(hostRoomRelation.getChatRoom(), hostRoomRelation);
+
+        return response;
     }
 
     /**
