@@ -8,9 +8,11 @@ import com.octopus.friends.dto.request.chat.JoinChatRoomRequestDto;
 import com.octopus.friends.dto.request.video.CreateVideoRoomRequestDto;
 import com.octopus.friends.dto.request.video.JoinVideoRoomRequestDto;
 import com.octopus.friends.dto.request.video.VideoRoomRequestDto;
+import com.octopus.friends.dto.response.chat.ChatRoomRelationResponseDto;
 import com.octopus.friends.dto.response.chat.CreateChatRoomResponseDto;
 import com.octopus.friends.dto.response.video.CreateVideoRoomResponseDto;
 import com.octopus.friends.dto.response.video.JoinVideoRoomResponseDto;
+import com.octopus.friends.dto.response.video.VideoRoomRelationResponseDto;
 import com.octopus.friends.dto.response.video.VideoRoomResponseDto;
 import com.octopus.friends.service.VideoRoomService;
 import com.octopus.friends.utils.Constants;
@@ -35,6 +37,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -96,12 +99,26 @@ public class VideoRoomController {
     }
 
     /**
+     * 로그인한 user가 참여하고 있는 모든 채팅방 조회
+     * @param
+     * @return user가 참여하고 있는 모든 채팅방 List
+     */
+    @GetMapping
+    public ResponseEntity<SingleResponse<List<VideoRoomRelationResponseDto>>> findAllByUserId(final String userid) {
+        List<VideoRoomRelationResponseDto> responses = videoRoomService.findAllByUser(userid);
+
+        SingleResponse<List<VideoRoomRelationResponseDto>> response = responseService.getSingleResponse(responses, Status.SUCCESS_SEARCHED_CHATROOM);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    /**
      * 채팅방 생성
      * @param userEmail 채팅방 생성하려는 user
      * @param request
      * @return
      */
-//    public ResponseEntity<SingleResponse<CreateVideoRoomResponseDto>> createVieoRoom
+//    public ResponseEntity<SingleResponse<CreateVideoRoomResponseDto>> createVideoRoom
 //                                                                    (@RequestHeader("USER-EMAIL") String userEmail,
 //                                                                    @RequestBody CreateVideoRoomRequestDto request) {
 //
