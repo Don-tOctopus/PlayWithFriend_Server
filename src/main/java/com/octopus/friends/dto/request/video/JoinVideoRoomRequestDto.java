@@ -18,14 +18,16 @@ import lombok.Setter;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 남유정
+ * [2022-10-03] 변수 변경 - 남유정
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class JoinVideoRoomRequestDto {
-    private Long chatRoomIdx;
-    private String userEmail;
+    private Long roomIdx;
+    private String userId;
+    private String roomPassword;
 
     /**
      *

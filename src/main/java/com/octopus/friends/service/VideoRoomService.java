@@ -6,6 +6,7 @@ import com.octopus.friends.domain.ChatRoom;
 import com.octopus.friends.domain.ChatRoomRelation;
 import com.octopus.friends.domain.User;
 import com.octopus.friends.dto.request.chat.JoinChatRoomRequestDto;
+import com.octopus.friends.dto.request.video.CreateVideoRoomRequestDto;
 import com.octopus.friends.dto.request.video.JoinVideoRoomRequestDto;
 import com.octopus.friends.dto.response.chat.ChatRoomResponseDto;
 import com.octopus.friends.dto.response.chat.JoinChatRoomResponseDto;
@@ -33,6 +34,7 @@ import java.util.List;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 남유정
+ * [2022-10-03] 채팅방 비밀번호 일치 여부 확인 매서드 추가 - 남유정
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -48,11 +50,15 @@ public class VideoRoomService {
      * @return
      */
     public JoinVideoRoomResponseDto joinVideoRoom(JoinVideoRoomRequestDto request) {
-        ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoomIdx())
+
+        ChatRoom chatRoom = chatRoomRepository.findByChatRoomIdEquals(request.getRoomIdx())
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_CHATROOM));
 
-        User user = userRepository.findByEmail(request.getUserEmail())
+        User user = userRepository.findByUserIdEquals(request.getUserId())
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_USER));
+
+        if(!passwordCheck(request.getRoomIdx(), request.getRoomPassword()))
+            new CustomerNotFoundException(Status.NOT_COINCIDE_PASSWORD);
 
         ChatRoomRelation chatRoomRelation = request.toEntity(chatRoom, user);
         chatRoom.join();
@@ -61,22 +67,37 @@ public class VideoRoomService {
     }
 
     /**
+     * 채팅방 비밀번호 일치 여부 확인
+     * @param roomIdx 채팅방 인덱스
+     * @param password 채팅방 비밀번호
+     * @return 채팅방 비밀번호 일치 여부에 대한 True/False
+     */
+    public boolean passwordCheck(final Long roomIdx, final String password) {
+        String roomPassword = chatRoomRepository.findRoomPasswordById(roomIdx);
+
+        boolean response = password.equals(roomPassword);
+
+        return response;
+    }
+
+
+    /**
      * 생성된 채팅방 DB에 저장
      * @param userEmail 로그인한 유저 Id (host)
      * @param request 생성하려는 채팅방 정보
      * @return
      */
 //    @Transactional
-//    public CreateVideoRoomResponseDto save(final String userEmail, CreateVideoRoomResponseDto request) {
-//        // user의 유효성 확인
+//    public CreateVideoRoomResponseDto save(final String userEmail, CreateVideoRoomRequestDto request) {
+        // user의 유효성 확인
 //        User host = checkValidUser(userEmail, request.getHostId());
 //
 //        // 채팅방 정보 저장
 //        ChatRoom chatRoom = chatRoomRepository.save(request.toEntity());
 //
 //        List<ChatRoomRelation> chatRoomRelationList = new ArrayList<>();
-//
-//
+
+
 //    }
 
     /**
