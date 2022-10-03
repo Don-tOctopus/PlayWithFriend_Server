@@ -132,7 +132,7 @@ public class VideoRoomService {
                     .user(user.get())
                     .build();
 
-            ChatRoomRelation re = chatRoomRelationRepository.save(chatRoomRelation);
+            ChatRoomRelation saveResponse = chatRoomRelationRepository.save(chatRoomRelation);
         }
 
         ChatRoomRelation hostRoomRelation = chatRoomRelationRepository.findByUserAndChatRoom(host, chatRoom);
@@ -140,25 +140,6 @@ public class VideoRoomService {
 
         return response;
     }
-
-    /**
-     * 생성된 채팅방 DB에 저장
-     * @param userEmail 로그인한 유저 Id (host)
-     * @param request 생성하려는 채팅방 정보
-     * @return
-     */
-//    @Transactional
-//    public CreateVideoRoomResponseDto save(final String userEmail, CreateVideoRoomRequestDto request) {
-        // user의 유효성 확인
-//        User host = checkValidUser(userEmail, request.getHostId());
-//
-//        // 채팅방 정보 저장
-//        ChatRoom chatRoom = chatRoomRepository.save(request.toEntity());
-//
-//        List<ChatRoomRelation> chatRoomRelationList = new ArrayList<>();
-
-
-//    }
 
     /**
      * 채팅방 생성시 생성하는 유저와 로그인한 유저의 일치 확인
