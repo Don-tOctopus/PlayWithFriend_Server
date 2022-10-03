@@ -8,10 +8,12 @@ import com.octopus.friends.domain.User;
 import com.octopus.friends.dto.request.chat.JoinChatRoomRequestDto;
 import com.octopus.friends.dto.request.video.CreateVideoRoomRequestDto;
 import com.octopus.friends.dto.request.video.JoinVideoRoomRequestDto;
+import com.octopus.friends.dto.response.chat.ChatRoomRelationResponseDto;
 import com.octopus.friends.dto.response.chat.ChatRoomResponseDto;
 import com.octopus.friends.dto.response.chat.JoinChatRoomResponseDto;
 import com.octopus.friends.dto.response.video.CreateVideoRoomResponseDto;
 import com.octopus.friends.dto.response.video.JoinVideoRoomResponseDto;
+import com.octopus.friends.dto.response.video.VideoRoomRelationResponseDto;
 import com.octopus.friends.dto.response.video.VideoRoomResponseDto;
 import com.octopus.friends.repository.ChatRoomRelationRepository;
 import com.octopus.friends.repository.ChatRoomRepository;
@@ -51,10 +53,10 @@ public class VideoRoomService {
      */
     public JoinVideoRoomResponseDto joinVideoRoom(JoinVideoRoomRequestDto request) {
 
-        ChatRoom chatRoom = chatRoomRepository.findByChatRoomIdEquals(request.getRoomIdx())
+        ChatRoom chatRoom = chatRoomRepository.findById(request.getRoomIdx())
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_CHATROOM));
 
-        User user = userRepository.findByUserIdEquals(request.getUserId())
+        User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_USER));
 
         if(!passwordCheck(request.getRoomIdx(), request.getRoomPassword()))
@@ -74,12 +76,35 @@ public class VideoRoomService {
      */
     public boolean passwordCheck(final Long roomIdx, final String password) {
         String roomPassword = chatRoomRepository.findRoomPasswordById(roomIdx);
-
+// table따로 만들면 findroompasswaordbyid findbyid로 변경
         boolean response = password.equals(roomPassword);
 
         return response;
     }
 
+    /**
+     * user가 속한 모든 채팅방 조회
+     * @param userid user id
+     * @return user가 속한 모든 채팅방 조회
+     */
+    @Transactional
+    public List<VideoRoomRelationResponseDto> findAllByUser(final String userid) {
+        User user = userRepository.findById(userid)
+                .orElseThrow(() ->  new CustomerNotFoundException(Status.NOT_SEARCHED_USER));
+
+        // user가 사용중인 모든 realtion 들 호출
+        List<ChatRoomRelation> chatRoomRelationList = chatRoomRelationRepository.findByUser(user);
+        List<VideoRoomRelationResponseDto> responses = new ArrayList<>();
+
+        for(ChatRoomRelation chatRoomRelation : chatRoomRelationList){
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomRelation.getChatRoom().getChatRoomIdx())
+                    .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_CHATROOM));
+
+            if(chatRoomRelation.isStatus())
+                responses.add(VideoRoomRelationResponseDto.of(chatRoomRelation, chatRoom));
+        }
+        return responses;
+    }
 
     /**
      * 생성된 채팅방 DB에 저장

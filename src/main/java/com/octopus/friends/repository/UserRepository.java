@@ -17,11 +17,9 @@ import java.util.Optional;
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
  * [2022-09-27] userId -> userEmail로 바뀌며 email로 user를 찾는 메소드 추가
- * [2022-10-03] userId로 userEmail 찾는 메소드 추가 - 남유정
  */
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
     public Optional<User> findByEmail(String userEmail);
-    public Optional<User> findByUserIdEquals(String userId);
 }

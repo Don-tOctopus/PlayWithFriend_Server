@@ -17,11 +17,10 @@ import java.util.Optional;
  * @version 1.0
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
- * [2022-10-03] 채팅방 인덱스로 채팅방 찾는 메소드 추가 - 남유정
  * [2022-10-03] 채팅방 인덱스로 채팅방 password 찾는 메소드 추가 - 남유정
  */
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-    public Optional<ChatRoom> findByChatRoomIdEquals(Long chatRoomIdx);
     public String findRoomPasswordById(Long chatRoomIdx);
+    // 테이블 새로 추가 시 이거 삭제하기
 }
