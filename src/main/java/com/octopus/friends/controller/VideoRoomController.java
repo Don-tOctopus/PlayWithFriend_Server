@@ -87,17 +87,6 @@ public class VideoRoomController {
         return ResponseEntity.ok().body(response);
     }
 
-    //TESTTESTTESTTESTTESTTESTTESTTESTTESTTEST
-    @PostMapping("/enter/go")
-    public JoinVideoRoomResponseDto gogo(@RequestBody JoinVideoRoomRequestDto request){
-
-        JoinVideoRoomResponseDto joinVideoRoom = videoRoomService.joinVideoRoom(request);
-        log.error(request.getUserId());
-//        SingleResponse<JoinVideoRoomResponseDto> response = responseService.getSingleResponse(joinVideoRoom,
-//                Status.SUCCESS_ENTERED_CHATROOM);
-        return joinVideoRoom;
-    }
-
     /**
      * 로그인한 user가 참여하고 있는 모든 채팅방 조회
      * @param

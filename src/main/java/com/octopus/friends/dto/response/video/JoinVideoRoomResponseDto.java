@@ -2,6 +2,8 @@ package com.octopus.friends.dto.response.video;
 
 import com.octopus.friends.domain.ChatRoom;
 import com.octopus.friends.domain.ChatRoomRelation;
+import com.octopus.friends.domain.VideoRoom;
+import com.octopus.friends.domain.VideoRoomRelation;
 import com.octopus.friends.dto.response.chat.JoinChatRoomResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,15 +29,15 @@ public class JoinVideoRoomResponseDto {
 
     /**
      *
-     * @param chatRoom 참여하는 채팅방 엔티티
-     * @param chatRoomRelation 채팅방에 참여하는 유저의 채팅방 엔티티
+     * @param videoRoom 참여하는 채팅방 엔티티
+     * @param videoRoomRelation 채팅방에 참여하는 유저의 채팅방 엔티티
      * @return
      */
-    public static JoinVideoRoomResponseDto of(ChatRoom chatRoom, ChatRoomRelation chatRoomRelation){
+    public static JoinVideoRoomResponseDto of(VideoRoom videoRoom, VideoRoomRelation videoRoomRelation){
         return new JoinVideoRoomResponseDto(
-                chatRoom.getChatRoomIdx(),
-                chatRoomRelation.getRoomRelationIdx(),
-                chatRoomRelation.getUser().getEmail()
+                videoRoom.getChatRoomIdx(),
+                videoRoomRelation.getRoomRelationIdx(),
+                videoRoomRelation.getUser().getEmail()
         );
     }
 }

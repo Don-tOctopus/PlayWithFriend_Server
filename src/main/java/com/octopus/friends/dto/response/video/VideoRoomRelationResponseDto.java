@@ -2,6 +2,8 @@ package com.octopus.friends.dto.response.video;
 
 import com.octopus.friends.domain.ChatRoom;
 import com.octopus.friends.domain.ChatRoomRelation;
+import com.octopus.friends.domain.VideoRoom;
+import com.octopus.friends.domain.VideoRoomRelation;
 import com.octopus.friends.dto.response.chat.ChatRoomRelationResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,11 +28,11 @@ public class VideoRoomRelationResponseDto {
     private int uCnt;
     private String roomName;
 
-    public static VideoRoomRelationResponseDto of(ChatRoomRelation chatRoomRelation, ChatRoom chatRoom){
+    public static VideoRoomRelationResponseDto of(VideoRoomRelation videoRoomRelation, VideoRoom videoRoom){
         return new VideoRoomRelationResponseDto(
-                chatRoomRelation.getChatRoom().getChatRoomIdx(),
-                chatRoomRelation.getChatRoom().getUCnt(),
-                chatRoom.getRoomName()
+                videoRoomRelation.getVideoRoom().getChatRoomIdx(),
+                videoRoomRelation.getVideoRoom().getUCnt(),
+                videoRoom.getRoomName()
         );
     }
 }
