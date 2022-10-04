@@ -1,8 +1,6 @@
 package com.octopus.friends.dto.request.video;
 
-import com.octopus.friends.domain.ChatRoom;
-import com.octopus.friends.domain.ChatRoomRelation;
-import com.octopus.friends.domain.User;
+import com.octopus.friends.domain.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,14 +29,14 @@ public class JoinVideoRoomRequestDto {
 
     /**
      *
-     * @param chatRoom 참여할 채팅방 엔티티
+     * @param videoRoom 참여할 채팅방 엔티티
      * @param user 채팅방에 참여하는 user 엔티티
      * @return
      */
-    public ChatRoomRelation toEntity(ChatRoom chatRoom, User user){
-        return ChatRoomRelation.builder()
+    public VideoRoomRelation toEntity(VideoRoom videoRoom, User user){
+        return VideoRoomRelation.builder()
                 .user(user)
-                .chatRoom(chatRoom)
+                .videoRoom(videoRoom)
                 .build();
     }
 }

@@ -2,9 +2,7 @@ package com.octopus.friends.service;
 
 import com.octopus.friends.common.domain.enums.Status;
 import com.octopus.friends.common.exception.CustomerNotFoundException;
-import com.octopus.friends.domain.ChatRoom;
-import com.octopus.friends.domain.ChatRoomRelation;
-import com.octopus.friends.domain.User;
+import com.octopus.friends.domain.*;
 import com.octopus.friends.dto.request.chat.JoinChatRoomRequestDto;
 import com.octopus.friends.dto.request.video.CreateVideoRoomRequestDto;
 import com.octopus.friends.dto.request.video.JoinVideoRoomRequestDto;
@@ -16,9 +14,7 @@ import com.octopus.friends.dto.response.video.CreateVideoRoomResponseDto;
 import com.octopus.friends.dto.response.video.JoinVideoRoomResponseDto;
 import com.octopus.friends.dto.response.video.VideoRoomRelationResponseDto;
 import com.octopus.friends.dto.response.video.VideoRoomResponseDto;
-import com.octopus.friends.repository.ChatRoomRelationRepository;
-import com.octopus.friends.repository.ChatRoomRepository;
-import com.octopus.friends.repository.UserRepository;
+import com.octopus.friends.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,9 +40,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class VideoRoomService {
-    private final ChatRoomRepository chatRoomRepository;
+    private final VideoRoomRepository videoRoomRepository;
     private final UserRepository userRepository;
-    private final ChatRoomRelationRepository chatRoomRelationRepository;
+    private final VideoRoomRelationRepository videoRoomRelationRepository;
 
     /**
      * 기존 채팅방에 새로운 유저 참여
@@ -55,20 +51,19 @@ public class VideoRoomService {
      */
     public JoinVideoRoomResponseDto joinVideoRoom(JoinVideoRoomRequestDto request) {
 
-        ChatRoom chatRoom = chatRoomRepository.findById(request.getRoomIdx())
+        VideoRoom videoRoom = videoRoomRepository.findById(request.getRoomIdx())
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_CHATROOM));
 
-        log.error(request.getUserId());
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_USER));
 
-//        if(!passwordCheck(request.getRoomIdx(), request.getRoomPassword()))
-//            new CustomerNotFoundException(Status.NOT_COINCIDE_PASSWORD);
+        if(!passwordCheck(request.getRoomIdx(), request.getRoomPassword()))
+            new CustomerNotFoundException(Status.NOT_COINCIDE_PASSWORD);
 
-        ChatRoomRelation chatRoomRelation = request.toEntity(chatRoom, user);
-        chatRoom.join();
+        VideoRoomRelation videoRoomRelation = request.toEntity(videoRoom, user);
+        videoRoom.join();
 
-        return JoinVideoRoomResponseDto.of(chatRoom, chatRoomRelationRepository.save(chatRoomRelation));
+        return JoinVideoRoomResponseDto.of(videoRoom, videoRoomRelationRepository.save(videoRoomRelation));
     }
 
     /**
@@ -77,13 +72,13 @@ public class VideoRoomService {
      * @param password 채팅방 비밀번호
      * @return 채팅방 비밀번호 일치 여부에 대한 True/False
      */
-//    public boolean passwordCheck(final Long roomIdx, final String password) {
-//        String roomPassword = chatRoomRepository.findRoomPasswordById(roomIdx);
-//// table따로 만들면 findroompasswaordbyid findbyid로 변경
-//        boolean response = password.equals(roomPassword);
-//
-//        return response;
-//    }
+    public boolean passwordCheck(final Long roomIdx, final String password) {
+        VideoRoom videoRoom = videoRoomRepository.findById(roomIdx)
+                .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_CHATROOM));
+        boolean response = password.equals(videoRoom.getRoomPassword());
+
+        return response;
+    }
 
     /**
      * user가 속한 모든 채팅방 조회
@@ -96,15 +91,15 @@ public class VideoRoomService {
                 .orElseThrow(() ->  new CustomerNotFoundException(Status.NOT_SEARCHED_USER));
 
         // user가 사용중인 모든 realtion 들 호출
-        List<ChatRoomRelation> chatRoomRelationList = chatRoomRelationRepository.findByUser(user);
+        List<VideoRoomRelation> videoRoomRelationList = videoRoomRelationRepository.findByUser(user);
         List<VideoRoomRelationResponseDto> responses = new ArrayList<>();
 
-        for(ChatRoomRelation chatRoomRelation : chatRoomRelationList){
-            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomRelation.getChatRoom().getChatRoomIdx())
+        for(VideoRoomRelation videoRoomRelation : videoRoomRelationList){
+            VideoRoom videoRoom = videoRoomRepository.findById(videoRoomRelation.getVideoRoom().getChatRoomIdx())
                     .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_CHATROOM));
 
-            if(chatRoomRelation.isStatus())
-                responses.add(VideoRoomRelationResponseDto.of(chatRoomRelation, chatRoom));
+            if(videoRoomRelation.isStatus())
+                responses.add(VideoRoomRelationResponseDto.of(videoRoomRelation, videoRoom));
         }
         return responses;
     }
@@ -118,9 +113,9 @@ public class VideoRoomService {
     public CreateVideoRoomResponseDto save(final String userEmail, CreateVideoRoomRequestDto request){
         User host = checkValidUser(userEmail, request.getHostId());
 
-        ChatRoom chatRoom = chatRoomRepository.save(request.toEntity());
+        VideoRoom videoRoom = videoRoomRepository.save(request.toEntity());
 
-        List<ChatRoomRelation> chatRoomRelationList = new ArrayList<>();
+        List<VideoRoomRelation> videoRoomRelationList = new ArrayList<>();
 
         for(String invitedUser : request.getUserList()) {
             Optional<User> user = userRepository.findByEmail(invitedUser);
@@ -128,16 +123,16 @@ public class VideoRoomService {
             if(!user.isPresent())
                 continue;
 
-            ChatRoomRelation chatRoomRelation = ChatRoomRelation.builder()
-                    .chatRoom(chatRoom)
+            VideoRoomRelation videoRoomRelation = VideoRoomRelation.builder()
+                    .videoRoom(videoRoom)
                     .user(user.get())
                     .build();
 
-            ChatRoomRelation saveResponse = chatRoomRelationRepository.save(chatRoomRelation);
+            VideoRoomRelation saveResponse = videoRoomRelationRepository.save(videoRoomRelation);
         }
 
-        ChatRoomRelation hostRoomRelation = chatRoomRelationRepository.findByUserAndChatRoom(host, chatRoom);
-        CreateVideoRoomResponseDto response = CreateVideoRoomResponseDto.of(hostRoomRelation.getChatRoom(), hostRoomRelation);
+        VideoRoomRelation hostRoomRelation = videoRoomRelationRepository.findByUserAndChatRoom(host, videoRoom);
+        CreateVideoRoomResponseDto response = CreateVideoRoomResponseDto.of(hostRoomRelation.getVideoRoom(), hostRoomRelation);
 
         return response;
     }

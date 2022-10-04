@@ -21,6 +21,4 @@ import java.util.Optional;
  */
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-//    public String findRoomPasswordById(Long chatRoomIdx);
-    // 테이블 새로 추가 시 이거 삭제하기
 }
