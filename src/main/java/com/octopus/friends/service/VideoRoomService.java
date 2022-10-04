@@ -44,9 +44,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class VideoRoomService {
-    ChatRoomRepository chatRoomRepository;
-    UserRepository userRepository;
-    ChatRoomRelationRepository chatRoomRelationRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final UserRepository userRepository;
+    private final ChatRoomRelationRepository chatRoomRelationRepository;
 
     /**
      * 기존 채팅방에 새로운 유저 참여
@@ -58,6 +58,7 @@ public class VideoRoomService {
         ChatRoom chatRoom = chatRoomRepository.findById(request.getRoomIdx())
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_CHATROOM));
 
+        log.error(request.getUserId());
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_USER));
 

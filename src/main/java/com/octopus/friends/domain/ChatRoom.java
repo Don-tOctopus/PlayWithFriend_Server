@@ -64,7 +64,7 @@ public class ChatRoom implements Serializable {
     private LocalDateTime updatedAt;
 
     @Schema(description = "채팅방의 타입", example = "TEXT", allowableValues = {"TEXT", "VIDEO"})
-    @Column(nullable = false, columnDefinition = "varchar(5)")
+    @Column(nullable = false, columnDefinition = "varchar(5) default USER")
     @Enumerated(EnumType.STRING)
     private ChatRoomType chatRoomType;
 

@@ -34,6 +34,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class User{
+    public enum UserRole {
+        USER,
+        ADMIN
+    }
+
     @Schema(description = "사용자의 이메일")
     @Id
     @Column(nullable = false,columnDefinition = "varchar(30)")
@@ -60,9 +65,9 @@ public class User{
     @Column(nullable = false, columnDefinition = "boolean")
     private boolean status;
 
-    @Schema(description = "사용자의 웹 버전")
-    @Column(nullable = false, columnDefinition = "varchar(6)")
-    private String version;
+    @Schema(description = "사용자의 접근 권한()", example = "USER", allowableValues = {"USER", "ADMIN"})
+    @Column(nullable = false, columnDefinition = "varchar(5)")
+    private UserRole userRole;
 
     @Schema(description = "사용자의 계정 최초 생성일자")
     @CreatedDate
@@ -91,6 +96,5 @@ public class User{
         this.password = password;
         this.birth = birth;
         this.status = true;
-        this.version = "0.0.1";
     }
 }
