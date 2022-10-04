@@ -18,6 +18,7 @@ import java.util.List;
  * @version 1.0
  * [수정내용] 
  * 예시) [2022-09-17] 주석추가 - 남유정
+ * [2022-10-04] ChatType 삭제 - 원지윤
  */
 @Getter
 @Setter
@@ -27,7 +28,6 @@ public class CreateVideoRoomRequestDto {
     private String hostId;
     private String roomName;
     private List<String> userList;
-    private String chatRoomType;
 
     /**
      * 입력된 값을 ChatRoom 엔티티로 변경하여 반환하는 메소드
@@ -35,7 +35,6 @@ public class CreateVideoRoomRequestDto {
      */
     public ChatRoom toEntity(){
         return ChatRoom.builder()
-                .chatRoomType(Enum.valueOf(ChatRoom.ChatRoomType.class, chatRoomType))
                 .roomName(roomName)
                 .uCnt(userList.size())
                 .build();
