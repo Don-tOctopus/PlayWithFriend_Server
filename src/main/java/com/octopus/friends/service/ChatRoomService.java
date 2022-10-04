@@ -113,6 +113,7 @@ public class ChatRoomService {
      * @return 유저의 정보
      */
     private User checkValidUser(String userEmail, String hostId)  {
+
         if(!userEmail.equals(hostId)){
             throw new CustomerNotFoundException(Status.BAD_REQUEST);
         }

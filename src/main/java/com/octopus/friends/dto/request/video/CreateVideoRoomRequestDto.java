@@ -19,6 +19,7 @@ import java.util.List;
  * @version 1.0
  * [수정내용] 
  * 예시) [2022-09-17] 주석추가 - 남유정
+ * [2022-10-04] ChatType 삭제 - 원지윤
  */
 @Getter
 @Setter
