@@ -47,6 +47,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     //embedded-redis
     implementation 'it.ozimov:embedded-redis:0.7.2'
+    //SpringSecurity
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.11'
 
 }
 
