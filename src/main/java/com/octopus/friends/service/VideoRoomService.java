@@ -61,8 +61,8 @@ public class VideoRoomService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_USER));
 
-        if(!passwordCheck(request.getRoomIdx(), request.getRoomPassword()))
-            new CustomerNotFoundException(Status.NOT_COINCIDE_PASSWORD);
+//        if(!passwordCheck(request.getRoomIdx(), request.getRoomPassword()))
+//            new CustomerNotFoundException(Status.NOT_COINCIDE_PASSWORD);
 
         ChatRoomRelation chatRoomRelation = request.toEntity(chatRoom, user);
         chatRoom.join();
@@ -76,13 +76,13 @@ public class VideoRoomService {
      * @param password 채팅방 비밀번호
      * @return 채팅방 비밀번호 일치 여부에 대한 True/False
      */
-    public boolean passwordCheck(final Long roomIdx, final String password) {
-        String roomPassword = chatRoomRepository.findRoomPasswordById(roomIdx);
-// table따로 만들면 findroompasswaordbyid findbyid로 변경
-        boolean response = password.equals(roomPassword);
-
-        return response;
-    }
+//    public boolean passwordCheck(final Long roomIdx, final String password) {
+//        String roomPassword = chatRoomRepository.findRoomPasswordById(roomIdx);
+//// table따로 만들면 findroompasswaordbyid findbyid로 변경
+//        boolean response = password.equals(roomPassword);
+//
+//        return response;
+//    }
 
     /**
      * user가 속한 모든 채팅방 조회
