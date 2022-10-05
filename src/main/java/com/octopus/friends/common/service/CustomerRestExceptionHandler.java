@@ -2,10 +2,14 @@ package com.octopus.friends.common.service;
 
 import com.octopus.friends.common.domain.CustomerErrorResponse;
 import com.octopus.friends.common.exception.CustomerNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 패키지명 com.octopus.friends.common.service
@@ -19,7 +23,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * 예시) [2022-09-17] 주석추가 - 원지윤
  * [2022-09-27] Status를 매개변수로 받는 생성자 추가 - 원지윤
  */
-
+@Slf4j
 @RestControllerAdvice("com.octopus.friends.controller")
 public class CustomerRestExceptionHandler {
     @ExceptionHandler
@@ -38,6 +42,16 @@ public class CustomerRestExceptionHandler {
                 exc.getMessage(),
                 System.currentTimeMillis());
 
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public  ResponseEntity<CustomerErrorResponse> methodValidException(MethodArgumentNotValidException exc) {
+        log.warn("MethodArgumentNotValidException 발생!!!  trace:{}", exc.getStackTrace());
+        CustomerErrorResponse error = new CustomerErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                exc.getMessage(),
+                System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
