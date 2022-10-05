@@ -29,11 +29,12 @@ public class CreateVideoRoomRequestDto {
 
     private String hostId;
     private String roomName;
+    private String roomPass;
     private List<String> userList;
 
     /**
-     * 입력된 값을 ChatRoom 엔티티로 변경하여 반환하는 메소드
-     * @return ChatRoom
+     * 입력된 값을 VideoRoom 엔티티로 변경하여 반환하는 메소드
+     * @return VideoRoom
      */
     public VideoRoom toEntity(){
         return VideoRoom.builder()

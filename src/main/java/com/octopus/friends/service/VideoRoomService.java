@@ -131,7 +131,7 @@ public class VideoRoomService {
             VideoRoomRelation saveResponse = videoRoomRelationRepository.save(videoRoomRelation);
         }
 
-        VideoRoomRelation hostRoomRelation = videoRoomRelationRepository.findByUserAndChatRoom(host, videoRoom);
+        VideoRoomRelation hostRoomRelation = videoRoomRelationRepository.findByUserAndVideoRoom(host, videoRoom);
         CreateVideoRoomResponseDto response = CreateVideoRoomResponseDto.of(hostRoomRelation.getVideoRoom(), hostRoomRelation);
 
         return response;
