@@ -8,10 +8,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +24,7 @@ import java.util.List;
  * [수정내용]
  * 예시) [2022-09-17] 주석추가 - 원지윤
  * [2022-09-17] 내용 추가 - 원지윤
+ * [2022-10-05] Enum타입을 String으로 DB에 저장하기 위한 어노테이션 추가 - 원지윤
  */
 
 @Entity
@@ -67,6 +65,7 @@ public class User{
 
     @Schema(description = "사용자의 접근 권한()", example = "USER", allowableValues = {"USER", "ADMIN"})
     @Column(nullable = false, columnDefinition = "varchar(5)")
+    @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
     @Schema(description = "사용자의 계정 최초 생성일자")
@@ -89,12 +88,13 @@ public class User{
      * @param birth user의 생년월일
      */
     @Builder
-    public User(String email, String userId, String userName, String password,String birth){
+    public User(String email, String userId, String userName, String password,String birth,UserRole userRole){
         this.email = email;
         this.userId = userId;
         this.userName = userName;
         this.password = password;
         this.birth = birth;
         this.status = true;
+        this.userRole = userRole;
     }
 }
