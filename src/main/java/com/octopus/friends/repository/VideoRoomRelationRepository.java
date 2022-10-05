@@ -22,5 +22,5 @@ import java.util.List;
 @Repository
 public interface VideoRoomRelationRepository extends JpaRepository<VideoRoomRelation, Long> {
     public List<VideoRoomRelation> findByUser(User user);
-    public VideoRoomRelation findByUserAndChatRoom(User user, VideoRoom videoRoom);
+    public VideoRoomRelation findByUserAndVideoRoom(User user, VideoRoom videoRoom);
 }
