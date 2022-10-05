@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -49,7 +50,7 @@ public class ChatRoomController {
      */
     @PostMapping
     public ResponseEntity<SingleResponse<CreateChatRoomResponseDto>> createChatRoom(@RequestHeader("USER-EMAIL") String userEmail,
-                                                                                    @RequestBody CreateChatRoomRequestDto request){
+                                                                                    @RequestBody @Valid CreateChatRoomRequestDto request){
         CreateChatRoomResponseDto chatRoom = chatRoomService.save(userEmail,request);
         SingleResponse<CreateChatRoomResponseDto> response = responseService.getSingleResponse(chatRoom,Status.SUCCESS_CREATED_CHATROOM);
         return ResponseEntity.ok().body(response);

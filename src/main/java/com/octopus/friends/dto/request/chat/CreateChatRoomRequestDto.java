@@ -3,6 +3,7 @@ package com.octopus.friends.dto.request.chat;
 import com.octopus.friends.domain.ChatRoom;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -22,6 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateChatRoomRequestDto {
+    @NotBlank
     private String hostId;
     private String roomName;
     private List<String> userList;
