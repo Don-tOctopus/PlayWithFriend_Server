@@ -29,9 +29,11 @@ public enum Status {
 
     //201
     SUCCESS_CREATED_CHATROOM(201, "채팅방 생성 성공"),
+    SUCCESS_CREATED_USER(201, "회원가입 성공"),
 
     //40x
     NOT_SEARCHED_USER(404, "찾을 수 없는 유저"),
+    DUPLIECATED_USER(404,"이미 가입된 회원입니다."),
     BAD_REQUEST(404,"옳지 않은 요청입니다."),
     NOT_SEARCHED_CHATROOM(404,"찾을 수 없는 채팅방입니다."),
     NOT_COINCIDE_PASSWORD(405,"일치하지 않는 비밀번호입니다.");
