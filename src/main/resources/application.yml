@@ -1,4 +1,8 @@
 spring:
+  config:
+    import:
+      - optional:classpath:/application-jwt.yml
+
   profiles:
     active: local
   #redis관련 설정
@@ -21,3 +25,10 @@ spring:
   #spring security 비활성화
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+
+server:
+  servlet:
+    session:
+      tracking-mode: cookie
+

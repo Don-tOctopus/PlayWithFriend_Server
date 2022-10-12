@@ -7,11 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 패키지명 com.octopus.friends.domain
@@ -31,7 +36,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User{
+public class User  {
     public enum UserRole {
         USER,
         ADMIN
@@ -97,4 +102,5 @@ public class User{
         this.status = true;
         this.userRole = userRole;
     }
+
 }

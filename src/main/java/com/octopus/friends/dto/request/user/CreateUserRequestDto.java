@@ -39,6 +39,7 @@ public class CreateUserRequestDto {
                 .userName(userName)
                 .password(password)
                 .birth(birth)
+                .userRole(User.UserRole.USER)
                 .build();
     }
 
