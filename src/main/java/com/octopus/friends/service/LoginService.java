@@ -40,6 +40,7 @@ public class LoginService {
 
     @Transactional
     public LoginResponseDto login(LoginRequestDto request) {
+        //로그인 요청한 사용자가 있는 사용자인지 확인
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new CustomerNotFoundException(Status.NOT_SEARCHED_USER));
 

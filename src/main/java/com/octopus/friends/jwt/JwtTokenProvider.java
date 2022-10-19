@@ -39,9 +39,9 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
     private final Key key;
     // 30분
-    private long ACCESS_TOKEN_VALIDATiON_SECOND = 60 * 30;
+    private long ACCESS_TOKEN_VALIDATiON_SECOND = 30 * 60 * 1000L; //30분
     // 1개월
-    private long REFRESH_TOKEN_VALIDATiON_SECOND = 60 * 60 * 24 * 30;
+    private long REFRESH_TOKEN_VALIDATiON_SECOND = 60 * 60 * 24 * 7 * 1000L; //1주
 
     public JwtTokenProvider(@Value("${spring.jwt.secret}") String secretKey) {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
@@ -59,9 +59,9 @@ public class JwtTokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        long now = (new Date()).getTime();
+        Date now = new Date();
         // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + this.ACCESS_TOKEN_VALIDATiON_SECOND);
+        Date accessTokenExpiresIn = new Date(now.getTime() + this.ACCESS_TOKEN_VALIDATiON_SECOND);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
@@ -71,7 +71,7 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + this.REFRESH_TOKEN_VALIDATiON_SECOND))
+                .setExpiration(new Date(now.getTime() + this.REFRESH_TOKEN_VALIDATiON_SECOND))
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
 
